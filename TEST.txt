@@ -1,6 +1,3 @@
 Clément LATHIERE.
-<<<<<<< HEAD
 Julien LABIE
-=======
 Alex
->>>>>>> de61cb86f00626885fcf7417668c84be7ff0efae
