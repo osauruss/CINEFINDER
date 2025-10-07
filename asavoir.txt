@@ -1,38 +1,22 @@
+
+
 Voir l’état du dépôt
 git status
 
+git pull pour recup le reste 
 
 👉 Montre les fichiers modifiés, ajoutés ou non suivis.
 
 Ajouter un fichier à suivre
 git add nom_du_fichier.txt
-
-
-👉 Prépare un fichier pour le prochain commit.
 (Pour tout ajouter : git add .)
 
-Enregistrer les changements (commit)
 git commit -m "Description claire du changement"
 
-
-👉 Sauvegarde un point de version localement.
-
-☁️ 3️⃣ Envoyer et récupérer les changements (push/pull)
-Envoyer tes commits vers GitHub
 git push
 
 
-👉 Envoie tes commits locaux vers la branche distante (souvent origin/main ou origin/master).
-
-💡 Si tu viens de créer la branche :
-
-git push -u origin nom_de_la_branche
-
-
-Le -u lie la branche locale à la branche distante pour les prochains push/pull.
-
-Récupérer les dernières modifications du dépôt distant
-git pull
-
-
-👉 Télécharge et fusionne les changements faits sur GitHub.
+POUR FUSIONNER  ENVOYER DEV DANS MAIN 
+git switch main
+git merge dev -m "v1.1"
+git push
