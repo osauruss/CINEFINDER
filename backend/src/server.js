@@ -37,6 +37,16 @@ async function startServer() {
 
     // Démarrer le serveur HTTP
     const port = process.env.PORT || 5000;
+    // Import des routes
+    const filmRoutes = require("./routes/filmRoutes");
+
+    // Utilisation des routes (elles seront accessibles sous /api/films)
+    app.use("/api/films", filmRoutes);
+
+    const movieRoutes = require("./routes/movies");
+    app.use("/api/movies", movieRoutes);
+
+
     app.listen(port, () => {
       console.log(`🚀 Serveur démarré sur http://localhost:${port}`);
     });
