@@ -46,6 +46,10 @@ async function startServer() {
     const movieRoutes = require("./routes/movies");
     app.use("/api/movies", movieRoutes);
 
+    const authRoutes = require("./routes/auth");
+    app.use("/api/auth", authRoutes);
+
+
 
     app.listen(port, () => {
       console.log(`🚀 Serveur démarré sur http://localhost:${port}`);

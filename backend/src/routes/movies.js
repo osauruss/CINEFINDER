@@ -15,6 +15,17 @@ router.get("/popular", async (req, res) => {
   }
 });
 
+router.get("/credits/:id", async (req, res) => {
+  try {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/movie/${req.params.id}/credits?api_key=${process.env.TMDB_API_KEY}&language=fr-FR`
+    );
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: "Erreur lors de la récupération des crédits" });
+  }
+});
+
 // Détails d’un film
 router.get("/details/:id", async (req, res) => {
   try {

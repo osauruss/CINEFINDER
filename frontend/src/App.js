@@ -10,24 +10,29 @@ import Login from "./components/Login";
 import Register from "./components/Register";
 import MovieDetails from "./pages/MovieDetails";
 import Navbar from "./components/Navbar";
+import Profile from "./pages/Profile";
+
 
 const App = () => {
   // State pour stocker le token JWT après connexion
   const [token, setToken] = useState("");
+  const [user, setUser] = useState(null); // nouvel état utilisateur
 
   return (
     <Router>
-      <Navbar token={token} /> {/* Navbar peut recevoir le token si besoin */}
+      <Navbar token={token} setToken={setToken} user={user} /> {/* Navbar peut recevoir le token si besoin */}
       <Routes>
         {/* Page d'accueil */}
         <Route path="/" element={<Home token={token} />} />
 
         <Route path="/movies" element={<Movies />} /> 
+        <Route path="/profile" element={<Profile token={token} />} />
+
 
         {/* Page Login */}
         <Route
           path="/login"
-          element={<Login setToken={setToken} />}
+          element={<Login setToken={setToken} setUser={setUser} />}
         />
 
         {/* Page Register */}
