@@ -19,6 +19,57 @@ export default function Movies() {
     fetchMovies();
   }, []);
 
+  const CircularRating = ({ value }) => {
+      const radius = 24;
+      const circumference = 2 * Math.PI * radius;
+      const offset = circumference - (value / 10) * circumference;
+
+      return (
+        <div style={{ position: "relative", width: "60px", height: "60px" }}>
+          <svg width="60" height="60">
+            <circle
+              stroke="#e0e0e0"
+              fill="transparent"
+              strokeWidth="5"
+              r={radius}
+              cx="30"
+              cy="30"
+            />
+            <circle
+              stroke="url(#grad)"
+              fill="transparent"
+              strokeWidth="5"
+              strokeLinecap="round"
+              r={radius}
+              cx="30"
+              cy="30"
+              strokeDasharray={circumference}
+              strokeDashoffset={offset}
+            />
+            <defs>
+              <linearGradient id="grad" x1="0" x2="1" y1="0" y2="1">
+                <stop offset="0%" stopColor="#FFD700" />
+                <stop offset="100%" stopColor="#FF8C00" />
+              </linearGradient>
+            </defs>
+          </svg>
+          <span
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              fontSize: "14px",
+              fontWeight: "600",
+            }}
+          >
+            {value.toFixed(1)}
+          </span>
+        </div>
+      );
+  };
+
+
   return (
     <div style={{ padding: "20px" }}>
       <h2>🎬 Films Populaires</h2>
@@ -56,7 +107,15 @@ export default function Movies() {
               <h3 style={{ fontSize: "16px", marginTop: "10px" }}>
                 {movie.title}
               </h3>
-              <p>⭐ {movie.vote_average}/10</p>
+              {/* Note avec barre de progression */}
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <CircularRating value={movie.vote_average} />
+                <span style={{ fontSize: "14px", color: "#666" }}>Note /10</span>
+              </div>
+
+
+              
+              
             </Link>
           </div>
         ))}
