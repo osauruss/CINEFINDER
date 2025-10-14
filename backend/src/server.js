@@ -39,6 +39,10 @@ async function startServer() {
     const port = process.env.PORT || 5000;
     // Import des routes
     const filmRoutes = require("./routes/filmRoutes");
+    const actorRoutes = require("./routes/actors");
+    app.use("/api/actors", actorRoutes);
+
+
 
     // Utilisation des routes (elles seront accessibles sous /api/films)
     app.use("/api/films", filmRoutes);

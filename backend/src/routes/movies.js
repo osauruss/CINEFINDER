@@ -15,6 +15,8 @@ router.get("/popular", async (req, res) => {
   }
 });
 
+
+
 router.get("/credits/:id", async (req, res) => {
   try {
     const response = await axios.get(
