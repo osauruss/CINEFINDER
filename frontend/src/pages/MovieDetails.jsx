@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { Link } from "react-router-dom";
+
 
 const MovieDetails = () => {
   const { id } = useParams();
@@ -146,10 +148,13 @@ const MovieDetails = () => {
           padding: "15px 0",
         }}
       >
-        {credits.cast.slice(0, 10).map((actor) => (
-          <div
+        {credits.cast.slice(0, 12).map((actor) => (
+          <Link
             key={actor.id}
+            to={`/actor/${actor.id}`}  // <- redirection vers ActorDetails
             style={{
+              textDecoration: "none",
+              color: "inherit",
               minWidth: "140px",
               textAlign: "center",
               backgroundColor: "#ffffff",
@@ -185,7 +190,7 @@ const MovieDetails = () => {
                 fontWeight: "bold",
                 fontSize: "14px",
                 color: "#222",
-                marginBottom: "4px",
+                marginBottom: "2px",
               }}
             >
               {actor.name}
@@ -193,14 +198,15 @@ const MovieDetails = () => {
             <p
               style={{
                 fontSize: "13px",
-                color: "#666",
+                color: "#777",
                 fontStyle: "italic",
               }}
             >
               {actor.character || "—"}
             </p>
-          </div>
+          </Link>
         ))}
+
         </div>
       </div>
   );

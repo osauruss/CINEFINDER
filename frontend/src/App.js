@@ -11,6 +11,7 @@ import Register from "./components/Register";
 import MovieDetails from "./pages/MovieDetails";
 import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
+import ActorDetails from "./pages/ActorDetails";
 
 
 const App = () => {
@@ -27,6 +28,7 @@ const App = () => {
 
         <Route path="/movies" element={<Movies />} /> 
         <Route path="/profile" element={<Profile token={token} />} />
+        <Route path="/actor/:id" element={<ActorDetails />} />
 
 
         {/* Page Login */}
