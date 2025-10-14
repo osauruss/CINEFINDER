@@ -7,6 +7,13 @@ const userSchema = new mongoose.Schema({
   likedMovies: [
     { tmdbId: String, title: String, rating: Number }
   ],
+  watchlist: [
+    {
+      tmdbId: String,     // ID TMDB du film
+      title: String,      // Titre du film
+      
+    }
+  ],
   preferences: {
     genres: [String],
     actors: [String]
