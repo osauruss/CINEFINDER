@@ -42,9 +42,10 @@ async function startServer() {
     const actorRoutes = require("./routes/actors");
     app.use("/api/actors", actorRoutes);
 
-
-
-    // Utilisation des routes (elles seront accessibles sous /api/films)
+    const watchlistRoutes = require("./routes/watchlist");
+    
+    app.use("/api/watchlist", watchlistRoutes);
+    
     app.use("/api/films", filmRoutes);
 
     const movieRoutes = require("./routes/movies");

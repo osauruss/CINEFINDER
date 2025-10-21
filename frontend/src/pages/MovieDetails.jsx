@@ -4,10 +4,11 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 
-const MovieDetails = () => {
-  const { id } = useParams();
-  const [movie, setMovie] = useState(null);
-  const [credits, setCredits] = useState(null);
+const MovieDetails = ({ token, user, setUser }) => {
+  const { id } = useParams();
+  const [movie, setMovie] = useState(null);
+  const [credits, setCredits] = useState(null);
+  const [addedToWatchlist, setAddedToWatchlist] = useState(false);
 
   useEffect(() => {
     const fetchMovie = async () => {
@@ -23,11 +24,68 @@ const MovieDetails = () => {
     fetchMovie();
   }, [id]);
 
-  if (!movie || !credits) return <p style={{ textAlign: "center", marginTop: "50px" }}>Chargement...</p>;
+  // ✨ 2. AJOUTER CE USE-EFFECT
+  // Il se déclenche quand 'user' ou 'movie' sont chargés/mis à jour.
+  useEffect(() => {
+    // On vérifie si 'user' (connecté) et 'movie' (chargé) existent
+    if (user && user.watchlist && movie) {
+      // On vérifie si un film dans la watchlist de l'utilisateur
+      // a le même ID que le film actuellement affiché
+      // Note: 'movie.id' vient de TMDB, 'item.tmdbId' est ce que tu as sauvegardé
+      const isAlreadyInList = user.watchlist.some(
+        (item) => item.tmdbId === movie.id
+      );
+      
+      setAddedToWatchlist(isAlreadyInList); // On met à jour l'état du bouton
+    }
+  }, [user, movie]); // Dépendances : user et movie
 
-  const director = credits.crew.find((c) => c.job === "Director");
-  const leadActor = credits.cast[0];
+ 
+const director = credits?.crew?.find((c) => c.job === "Director");
+const leadActor = credits?.cast?.[0]; // Ajout du ?.[] pour les tableaux
 
+
+
+const addToWatchlist = async () => {
+    if (!token) return alert("Veuillez vous connecter pour ajouter à la watchlist !");
+    try {
+      await axios.post(
+        "http://localhost:5000/api/watchlist/add",
+        {
+          tmdbId: movie.id,
+          title: movie.title,
+          poster: movie.poster_path,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Met à jour l'état local (pour le bouton)
+      setAddedToWatchlist(true);
+
+      // 3. ✨ METTRE À JOUR L'ÉTAT GLOBAL (dans App.js) ✨
+      // On crée le nouvel objet film tel qu'il sera dans la BDD
+      const newWatchlistItem = {
+        tmdbId: movie.id,
+        title: movie.title,
+        poster: movie.poster_path,
+        addedAt: new Date().toISOString(), // Simule la date d'ajout
+      };
+
+      // On met à jour l'état 'user' dans App.js
+      if (user) {
+        setUser({
+          ...user, // Copie de toutes les infos (username, email...)
+          watchlist: [...user.watchlist, newWatchlistItem], // Ajout du nouveau film à la liste
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Erreur lors de l'ajout !");
+    }
+  };
+
+  if (!movie || !credits) return <p style={{ textAlign: "center", marginTop: "50px" }}>Chargement...</p>;
+  
   return (
     <div
       style={{
@@ -104,6 +162,22 @@ const MovieDetails = () => {
           >
             {movie.overview || "Aucun résumé disponible."}
           </p>
+          <button
+            onClick={addToWatchlist}
+            disabled={addedToWatchlist}
+            style={{
+            marginTop: "15px",
+            backgroundColor: addedToWatchlist ? "#4caf50" : "#f5b50a",
+            color: "white",
+            border: "none",
+            padding: "10px 20px",
+            borderRadius: "8px",
+            cursor: addedToWatchlist ? "default" : "pointer",
+            transition: "0.3s",
+             }}
+            >
+            {addedToWatchlist ? "✅ Ajouté à la Watchlist" : "➕ Ajouter à ma Watchlist"}
+          </button>
 
           <div
             style={{
@@ -122,6 +196,7 @@ const MovieDetails = () => {
               {leadActor ? leadActor.name : "Non renseigné"}
             </p>
           </div>
+
         </div>
       </div>
 

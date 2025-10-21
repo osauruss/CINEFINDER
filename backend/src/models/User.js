@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
     {
       tmdbId: String,     // ID TMDB du film
       title: String,      // Titre du film
-      
+      poster: String      // (nouveau champ) URL de l'affiche du film
     }
   ],
   preferences: {

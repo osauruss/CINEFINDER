@@ -1,27 +1,14 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
+
 import { Link } from "react-router-dom";
 
-const Profile = ({ token }) => {
-  const [user, setUser] = useState(null);
+const Profile = ({ token, user }) => {
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/api/auth/profile", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setUser(res.data.user);
-      } catch (err) {
-        console.error("Erreur de récupération du profil :", err);
-      }
-    };
 
-    if (token) fetchProfile();
-  }, [token]);
+
 
   if (!token) return <p>❌ Vous devez être connecté pour voir votre profil.</p>;
-  if (!user) return <p>Chargement...</p>;
+  if (!user) return <p>Chargement du profil...</p>;
 
   // Tri des films likés par note croissante
   const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => a.rating - b.rating);
@@ -180,7 +167,7 @@ const Profile = ({ token }) => {
               >
                 <Link to={`/movie/${movie.tmdbId}`} style={{ textDecoration: "none", color: "inherit" }}>
                   <img
-                    src={`https://image.tmdb.org/t/p/w200${movie.poster_path || ""}`}
+                    src={`https://image.tmdb.org/t/p/w200${movie.poster || ""}`}
                     alt={movie.title}
                     style={{ borderRadius: "10px", width: "100%" }}
                   />
