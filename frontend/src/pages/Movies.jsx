@@ -18,56 +18,146 @@ export default function Movies() {
 
     fetchMovies();
   }, []);
-
+  
   const CircularRating = ({ value }) => {
-      const radius = 24;
-      const circumference = 2 * Math.PI * radius;
-      const offset = circumference - (value / 10) * circumference;
+    const radius = 24;
+    const circumference = 2 * Math.PI * radius;
+    const offset = circumference - (value / 10) * circumference;
 
-      return (
-        <div style={{ position: "relative", width: "60px", height: "60px" }}>
-          <svg width="60" height="60">
-            <circle
-              stroke="#e0e0e0"
-              fill="transparent"
-              strokeWidth="5"
-              r={radius}
-              cx="30"
-              cy="30"
-            />
-            <circle
-              stroke="url(#grad)"
-              fill="transparent"
-              strokeWidth="5"
-              strokeLinecap="round"
-              r={radius}
-              cx="30"
-              cy="30"
-              strokeDasharray={circumference}
-              strokeDashoffset={offset}
-            />
-            <defs>
-              <linearGradient id="grad" x1="0" x2="1" y1="0" y2="1">
-                <stop offset="0%" stopColor="#FFD700" />
-                <stop offset="100%" stopColor="#FF8C00" />
-              </linearGradient>
-            </defs>
-          </svg>
-          <span
+    // 🔹 Fonction pour générer la couleur en fonction de la note
+
+    const getGradientColors = (score) => {
+      if (score >= 7.5) {
+        // Très bon film → vert dégradé
+        return ["#00c853", "#aeea00"];
+      } else if (score >= 4) {
+        // Moyen → orange
+        return ["#ffb300", "#ff6f00"];
+      } else {
+        // Mauvais → rouge
+        return ["#ff3d00", "#dd2c00"];
+      }
+    };
+
+    const [startColor, endColor] = getGradientColors(value);
+
+    return (
+      <div
+        style={{
+          position: "relative",
+          width: "60px",
+          height: "60px",
+          display: "inline-block",
+        }}
+      >
+        <svg
+          width="60"
+          height="60"
+          style={{
+            transform: "rotate(-90deg)", // ✅ commence à 12h et tourne dans le bon sens
+          }}
+        >
+          {/* Cercle de fond (gris clair) */}
+          <circle
+            stroke="#e0e0e0"
+            fill="transparent"
+            strokeWidth="5"
+            r={radius}
+            cx="30"
+            cy="30"
+          />
+
+          {/* Cercle de progression */}
+          <defs>
+            <linearGradient id={`grad-${value}`} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor={startColor} />
+              <stop offset="100%" stopColor={endColor} />
+            </linearGradient>
+          </defs>
+
+          <circle
+            stroke={`url(#grad-${value})`}
+            fill="transparent"
+            strokeWidth="5"
+            strokeLinecap="round"
+            r={radius}
+            cx="30"
+            cy="30"
+            strokeDasharray={circumference}
+            strokeDashoffset={offset}
             style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              fontSize: "14px",
-              fontWeight: "600",
+              transition: "stroke-dashoffset 0.6s ease, stroke 0.6s ease",
             }}
-          >
-            {value.toFixed(1)}
-          </span>
-        </div>
-      );
+          />
+        </svg>
+
+        {/* Texte au centre */}
+        <span
+          style={{
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%, -50%)",
+            fontSize: "14px",
+            fontWeight: "600",
+            color: "#222",
+          }}
+        >
+          {value.toFixed(1)}
+        </span>
+      </div>
+    );
   };
+
+  //const CircularRating = ({ value }) => {
+  //    const radius = 24;
+  //    const circumference = 2 * Math.PI * radius;
+  //    const offset = circumference - (value / 10) * circumference;
+//
+  //    return (
+  //      <div style={{ position: "relative", width: "60px", height: "60px" }}>
+  //        <svg width="60" height="60">
+  //          <circle
+  //            stroke="#e0e0e0"
+  //            fill="transparent"
+  //            strokeWidth="5"
+  //            r={radius}
+  //            cx="30"
+  //            cy="30"
+  //          />
+  //          <circle
+  //            stroke="url(#grad)"
+  //            fill="transparent"
+  //            strokeWidth="5"
+  //            strokeLinecap="round"
+  //            r={radius}
+  //            cx="30"
+  //            cy="30"
+  //            strokeDasharray={circumference}
+  //            strokeDashoffset={offset}
+  //          />
+  //          <defs>
+  //            <linearGradient id="grad" x1="0" x2="1" y1="0" y2="1">
+  //              <stop offset="0%" stopColor="#FFD700" />
+  //              <stop offset="100%" stopColor="#FF8C00" />
+  //            </linearGradient>
+  //          </defs>
+  //        </svg>
+  //        <span
+  //          style={{
+  //            position: "absolute",
+  //            top: "50%",
+  //            left: "50%",
+  //            transform: "translate(-50%, -50%)",
+  //            fontSize: "14px",
+  //            fontWeight: "600",
+  //          }}
+  //        >
+  //          {value.toFixed(1)}
+  //        </span>
+  //      </div>
+  //    );
+  //};
 
 
   return (
