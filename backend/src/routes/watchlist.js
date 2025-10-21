@@ -20,8 +20,8 @@ router.post("/add", authMiddleware, async (req, res) => {
     if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
 
     // Vérifie si le film est déjà dans la liste
-    const alreadyAdded = user.watchlist.some((m) => m.tmdbId === tmdbId);
-    if (alreadyAdded) return res.status(400).json({ message: "Film déjà dans la watchlist" });
+    const alreadyAdded = user.watchlist.some((m) => String(m.tmdbId) === String(tmdbId));
+    if (alreadyAdded) return res.status(400).json({ message: "Film déjà dans la watchlist" });
 
     // Ajoute le film
     user.watchlist.push({ tmdbId, title, poster });

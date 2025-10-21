@@ -63,7 +63,7 @@ const App = () => {
         <Route path="/profile" element={<Profile token={token} user={user} />} />
 
         <Route path="/actor/:id" element={<ActorDetails />} />
-        <Route path="/login" element={<Login setToken={setToken} setUser={setUser} />} />
+        <Route path="/login" element={<Login setToken={setToken} />} />
         <Route path="/register" element={<Register />} />
 
         {/* 6. MODIFIER LA ROUTE MOVIEDETAILS */}

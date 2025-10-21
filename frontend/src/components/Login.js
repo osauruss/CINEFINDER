@@ -1,9 +1,9 @@
-// frontend/src/pages/Login.jsx
+
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import api from "../api";
 
-export default function Login({ setToken, setUser }) {
+export default function Login({ setToken }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
@@ -14,8 +14,7 @@ export default function Login({ setToken, setUser }) {
     try {
       const response = await api.post("/auth/login", { email, password });
       setToken(response.data.token);
-      setUser(response.data.user);
-      localStorage.setItem("token", response.data.token);
+      
       setMessage("Connexion réussie !");
       setTimeout(() => navigate("/"), 800);
     } catch (err) {

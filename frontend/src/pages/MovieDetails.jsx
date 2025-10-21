@@ -26,19 +26,15 @@ const MovieDetails = ({ token, user, setUser }) => {
 
   // ✨ 2. AJOUTER CE USE-EFFECT
   // Il se déclenche quand 'user' ou 'movie' sont chargés/mis à jour.
-  useEffect(() => {
-    // On vérifie si 'user' (connecté) et 'movie' (chargé) existent
+  useEffect(() => {
     if (user && user.watchlist && movie) {
-      // On vérifie si un film dans la watchlist de l'utilisateur
-      // a le même ID que le film actuellement affiché
-      // Note: 'movie.id' vient de TMDB, 'item.tmdbId' est ce que tu as sauvegardé
+      // 👇 CORRECTION : On convertit les deux en String()
       const isAlreadyInList = user.watchlist.some(
-        (item) => item.tmdbId === movie.id
+        (item) => String(item.tmdbId) === String(movie.id)
       );
-      
-      setAddedToWatchlist(isAlreadyInList); // On met à jour l'état du bouton
+      setAddedToWatchlist(isAlreadyInList);
     }
-  }, [user, movie]); // Dépendances : user et movie
+  }, [user, movie]);
 
  
 const director = credits?.crew?.find((c) => c.job === "Director");
