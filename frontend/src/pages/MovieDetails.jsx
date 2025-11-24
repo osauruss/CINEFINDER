@@ -1,4 +1,390 @@
 import React, { useEffect, useState } from "react";
+import { useParams, Link } from "react-router-dom";
+import axios from "axios";
+
+const MovieDetails = ({ token, user, setUser }) => {
+  const { id } = useParams();
+
+  const [movie, setMovie] = useState(null);
+  const [credits, setCredits] = useState(null);
+
+  // Nouveau : trailer et providers
+  const [trailer, setTrailer] = useState(null);
+  const [providers, setProviders] = useState(null);
+
+  const [addedToWatchlist, setAddedToWatchlist] = useState(false);
+
+  // ─────────────────────────────────────────────
+  // FETCH PRINCIPAL : film + cast + crew
+  // ─────────────────────────────────────────────
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [resMovie, resCredits] = await Promise.all([
+          axios.get(`http://localhost:5000/api/movies/details/${id}`),
+          axios.get(`http://localhost:5000/api/movies/credits/${id}`)
+        ]);
+
+        setMovie(resMovie.data);
+        setCredits(resCredits.data);
+      } catch (err) {
+        console.error("Erreur movie/credits :", err);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  // ─────────────────────────────────────────────
+  // FETCH TRAILER
+  // ─────────────────────────────────────────────
+  useEffect(() => {
+    const fetchTrailer = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/movies/${id}/trailer`);
+        setTrailer(res.data.trailerKey || null);
+      } catch (err) {
+        console.error("Erreur trailer :", err);
+      }
+    };
+    fetchTrailer();
+  }, [id]);
+
+  // ─────────────────────────────────────────────
+  // FETCH PROVIDERS
+  // ─────────────────────────────────────────────
+  useEffect(() => {
+    const fetchProviders = async () => {
+      try {
+        const res = await axios.get(`http://localhost:5000/api/movies/${id}/providers`);
+        setProviders(res.data);
+      } catch (err) {
+        console.error("Erreur providers :", err);
+      }
+    };
+    fetchProviders();
+  }, [id]);
+
+  // ─────────────────────────────────────────────
+  // Watchlist : vérifie si déjà ajouté
+  // ─────────────────────────────────────────────
+  useEffect(() => {
+    if (user && user.watchlist && movie) {
+      const isAlreadyInList = user.watchlist.some(
+        (item) => String(item.tmdbId) === String(movie.id)
+      );
+      setAddedToWatchlist(isAlreadyInList);
+    }
+  }, [user, movie]);
+
+  const addToWatchlist = async () => {
+    if (!token) return alert("Veuillez vous connecter pour ajouter à la watchlist !");
+
+    try {
+      await axios.post(
+        "http://localhost:5000/api/watchlist/add",
+        {
+          tmdbId: movie.id,
+          title: movie.title,
+          poster: movie.poster_path,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      setAddedToWatchlist(true);
+
+      if (user) {
+        setUser({
+          ...user,
+          watchlist: [
+            ...user.watchlist,
+            {
+              tmdbId: movie.id,
+              title: movie.title,
+              poster: movie.poster_path,
+              addedAt: new Date().toISOString(),
+            },
+          ],
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.message || "Erreur lors de l'ajout !");
+    }
+  };
+
+  if (!movie || !credits)
+    return <p style={{ textAlign: "center", marginTop: "50px" }}>Chargement...</p>;
+
+  const director = credits?.crew?.find((c) => c.job === "Director");
+  const leadActor = credits?.cast?.[0];
+
+  return (
+    <div
+      style={{
+        maxWidth: "1100px",
+        margin: "40px auto",
+        padding: "20px",
+        fontFamily: "Inter, sans-serif",
+        color: "#222",
+        lineHeight: 1.6,
+      }}
+    >
+      {/* ░░░░░░░░░░ Informations du film ░░░░░░░░░░ */}
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "30px",
+          background: "#fff",
+          borderRadius: "16px",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
+          padding: "30px",
+        }}
+      >
+        {/* Poster */}
+        <div style={{ flex: "1 1 300px", textAlign: "center" }}>
+          <img
+            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+            alt={movie.title}
+            style={{
+              width: "100%",
+              maxWidth: "320px",
+              borderRadius: "12px",
+              objectFit: "cover",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.15)",
+            }}
+          />
+        </div>
+
+        {/* Infos */}
+        <div style={{ flex: "2 1 500px" }}>
+          <h1 style={{ fontSize: "2.2rem", marginBottom: "10px" }}>
+            {movie.title}
+          </h1>
+
+          <p style={{ color: "#666" }}>
+            <strong>Date de sortie :</strong> {movie.release_date}
+          </p>
+
+          <p style={{ marginTop: "8px" }}>
+            <strong>Note :</strong>{" "}
+            <span style={{ color: "#f5c518", fontWeight: "bold" }}>
+              ⭐ {movie.vote_average.toFixed(1)}/10
+            </span>
+          </p>
+
+          <p style={{ marginTop: "20px" }}>
+            {movie.overview || "Aucun résumé disponible."}
+          </p>
+
+          <button
+            onClick={addToWatchlist}
+            disabled={addedToWatchlist}
+            style={{
+              marginTop: "15px",
+              backgroundColor: addedToWatchlist ? "#4caf50" : "#f5b50a",
+              color: "white",
+              border: "none",
+              padding: "10px 20px",
+              borderRadius: "8px",
+              cursor: addedToWatchlist ? "default" : "pointer",
+            }}
+          >
+            {addedToWatchlist
+              ? "✅ Ajouté à la Watchlist"
+              : "➕ Ajouter à ma Watchlist"}
+          </button>
+
+          <div
+            style={{
+              marginTop: "20px",
+              background: "#f8f8f8",
+              borderRadius: "10px",
+              padding: "15px",
+            }}
+          >
+            <p>🎬 <strong>Réalisateur :</strong> {director?.name || "—"}</p>
+            <p>⭐ <strong>Acteur principal :</strong> {leadActor?.name || "—"}</p>
+          </div>
+        </div>
+      </div>
+
+      {/* ░░░░░░░░░░ Trailer vidéo ░░░░░░░░░░ */}
+      {trailer && (
+        <div style={{ marginTop: "40px" }}>
+          <h2
+            style={{
+              fontSize: "1.8rem",
+              borderBottom: "3px solid #f5b50a",
+              display: "inline-block",
+              marginBottom: "15px",
+            }}
+          >
+            Bande-annonce
+          </h2>
+
+          <iframe
+            width="100%"
+            height="420"
+            src={`https://www.youtube.com/embed/${trailer}`}
+            title="Trailer YouTube"
+            style={{
+              borderRadius: "12px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+              border: "none",
+            }}
+            allowFullScreen
+          ></iframe>
+        </div>
+      )}
+
+      {/* 📺 Où regarder */}
+    {movie.providers &&
+      typeof movie.providers === "object" &&
+      (movie.providers.flatrate ||
+        movie.providers.rent ||
+        movie.providers.buy) && (
+        <div style={{ marginTop: "40px" }}>
+          <h2
+            style={{
+              fontSize: "1.8rem",
+              borderBottom: "3px solid #f5b50a",
+              display: "inline-block",
+              paddingBottom: "5px",
+            }}
+          >
+            Où regarder ?
+          </h2>
+          
+          <div style={{ marginTop: "20px" }}>
+            {/* STREAMING */}
+            {movie.providers.flatrate && (
+              <div style={{ marginBottom: "20px" }}>
+                <h3 style={{ marginBottom: "10px" }}>📺 Streaming</h3>
+                <div style={{ display: "flex", gap: "15px" }}>
+                  {movie.providers.flatrate.map((p) => (
+                    <div key={p.provider_id} style={{ textAlign: "center" }}>
+                      <img
+                        src={`https://image.tmdb.org/t/p/w92${p.logo_path}`}
+                        alt={p.provider_name}
+                        style={{ width: "60px", borderRadius: "10px" }}
+                      />
+                      <p style={{ fontSize: "0.9rem" }}>{p.provider_name}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+    
+            {/* LOCATION */}
+            {movie.providers.rent && (
+              <div style={{ marginBottom: "20px" }}>
+                <h3 style={{ marginBottom: "10px" }}>💰 Location</h3>
+                <div style={{ display: "flex", gap: "15px" }}>
+                  {movie.providers.rent.map((p) => (
+                    <div key={p.provider_id} style={{ textAlign: "center" }}>
+                      <img
+                        src={`https://image.tmdb.org/t/p/w92${p.logo_path}`}
+                        alt={p.provider_name}
+                        style={{ width: "60px", borderRadius: "10px" }}
+                      />
+                      <p style={{ fontSize: "0.9rem" }}>{p.provider_name}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+    
+            {/* ACHAT */}
+            {movie.providers.buy && (
+              <div style={{ marginBottom: "20px" }}>
+                <h3 style={{ marginBottom: "10px" }}>🛒 Achat</h3>
+                <div style={{ display: "flex", gap: "15px" }}>
+                  {movie.providers.buy.map((p) => (
+                    <div key={p.provider_id} style={{ textAlign: "center" }}>
+                      <img
+                        src={`https://image.tmdb.org/t/p/w92${p.logo_path}`}
+                        alt={p.provider_name}
+                        style={{ width: "60px", borderRadius: "10px" }}
+                      />
+                      <p style={{ fontSize: "0.9rem" }}>{p.provider_name}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+
+      {/* ░░░░░░░░░░ Distribution ░░░░░░░░░░ */}
+      <h2
+        style={{
+          marginTop: "40px",
+          marginBottom: "20px",
+          fontSize: "1.8rem",
+          borderBottom: "3px solid #f5b50a",
+          display: "inline-block",
+          paddingBottom: "5px",
+        }}
+      >
+        Distribution principale
+      </h2>
+
+      <div
+        style={{
+          display: "flex",
+          overflowX: "auto",
+          gap: "20px",
+          padding: "15px 0",
+        }}
+      >
+        {credits.cast.slice(0, 12).map((actor) => (
+          <Link
+            key={actor.id}
+            to={`/actor/${actor.id}`}
+            style={{
+              minWidth: "140px",
+              textAlign: "center",
+              textDecoration: "none",
+              color: "inherit",
+              background: "#fff",
+              padding: "10px",
+              borderRadius: "12px",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+              transition: "0.2s",
+            }}
+          >
+            <img
+              src={
+                actor.profile_path
+                  ? `https://image.tmdb.org/t/p/w185${actor.profile_path}`
+                  : "https://via.placeholder.com/120x180?text=No+Image"
+              }
+              alt={actor.name}
+              style={{
+                width: "100%",
+                borderRadius: "10px",
+                marginBottom: "8px",
+              }}
+            />
+            <p style={{ fontWeight: "bold" }}>{actor.name}</p>
+            <p style={{ color: "#777", fontStyle: "italic" }}>
+              {actor.character || "—"}
+            </p>
+          </Link>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default MovieDetails;
+
+/*
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -24,7 +410,7 @@ const MovieDetails = ({ token, user, setUser }) => {
     fetchMovie();
   }, [id]);
 
-  // ✨ 2. AJOUTER CE USE-EFFECT
+
   // Il se déclenche quand 'user' ou 'movie' sont chargés/mis à jour.
   useEffect(() => {
     if (user && user.watchlist && movie) {
@@ -93,7 +479,7 @@ const addToWatchlist = async () => {
         lineHeight: "1.6",
       }}
     >
-      {/* Bloc principal */}
+      {/* Bloc principal *}
       <div
         style={{
           display: "flex",
@@ -105,7 +491,7 @@ const addToWatchlist = async () => {
           padding: "30px",
         }}
       >
-        {/* Image */}
+        {/* Image *}
         <div style={{ flex: "1 1 300px", textAlign: "center" }}>
           <img
             src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
@@ -120,7 +506,7 @@ const addToWatchlist = async () => {
           />
         </div>
 
-        {/* Infos principales */}
+        {/* Infos principales *}
         <div style={{ flex: "2 1 500px" }}>
           <h1
             style={{
@@ -196,7 +582,7 @@ const addToWatchlist = async () => {
         </div>
       </div>
 
-      {/* Liste d'acteurs */}
+      {/* Liste d'acteurs *}
       
       <h2
         style={{
@@ -283,7 +669,7 @@ const addToWatchlist = async () => {
   );
 };
 
-export default MovieDetails;
+export default MovieDetails;*/
 
 /*
 // frontend/src/pages/MovieDetails.jsx
