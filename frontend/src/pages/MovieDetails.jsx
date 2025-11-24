@@ -238,85 +238,143 @@ const MovieDetails = ({ token, user, setUser }) => {
           ></iframe>
         </div>
       )}
+      
+
 
       {/* 📺 Où regarder */}
-    {movie.providers &&
-      typeof movie.providers === "object" &&
-      (movie.providers.flatrate ||
-        movie.providers.rent ||
-        movie.providers.buy) && (
-        <div style={{ marginTop: "40px" }}>
-          <h2
-            style={{
-              fontSize: "1.8rem",
-              borderBottom: "3px solid #f5b50a",
-              display: "inline-block",
-              paddingBottom: "5px",
-            }}
-          >
-            Où regarder ?
-          </h2>
-          
-          <div style={{ marginTop: "20px" }}>
-            {/* STREAMING */}
-            {movie.providers.flatrate && (
-              <div style={{ marginBottom: "20px" }}>
-                <h3 style={{ marginBottom: "10px" }}>📺 Streaming</h3>
-                <div style={{ display: "flex", gap: "15px" }}>
-                  {movie.providers.flatrate.map((p) => (
-                    <div key={p.provider_id} style={{ textAlign: "center" }}>
-                      <img
-                        src={`https://image.tmdb.org/t/p/w92${p.logo_path}`}
-                        alt={p.provider_name}
-                        style={{ width: "60px", borderRadius: "10px" }}
-                      />
-                      <p style={{ fontSize: "0.9rem" }}>{p.provider_name}</p>
-                    </div>
-                  ))}
+      {/* 📺 Où regarder */}
+      {providers &&
+        (providers.flatrate?.length > 0 ||
+          providers.rent?.length > 0 ||
+          providers.buy?.length > 0) && (
+          <div style={{ marginTop: "45px" }}>
+            <h2
+              style={{
+                fontSize: "1.8rem",
+                marginBottom: "25px",
+                borderBottom: "3px solid #f5b50a",
+                display: "inline-block",
+                paddingBottom: "5px",
+              }}
+            >
+              Où regarder ?
+            </h2>
+            
+            <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
+              {/* STREAMING */}
+              {providers.flatrate?.length > 0 && (
+                <div>
+                  <h3 style={{ marginBottom: "12px" }}>Streaming</h3>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+                    {providers.flatrate.map((p) => (
+                      <div
+                        key={p.provider_id}
+                        style={{
+                          width: "100px",
+                          textAlign: "center",
+                          background: "#fff",
+                          padding: "10px",
+                          borderRadius: "12px",
+                          boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
+                          transition: "transform 0.2s, box-shadow 0.2s",
+                        }}
+                      >
+                        <img
+                          src={`https://image.tmdb.org/t/p/w92${p.logo_path}`}
+                          alt={p.provider_name}
+                          style={{
+                            width: "60px",
+                            height: "60px",
+                            objectFit: "contain",
+                            marginBottom: "8px",
+                          }}
+                        />
+                        <p style={{ fontSize: "0.85rem", fontWeight: "600", color: "#333" }}>
+                          {p.provider_name}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-    
-            {/* LOCATION */}
-            {movie.providers.rent && (
-              <div style={{ marginBottom: "20px" }}>
-                <h3 style={{ marginBottom: "10px" }}>💰 Location</h3>
-                <div style={{ display: "flex", gap: "15px" }}>
-                  {movie.providers.rent.map((p) => (
-                    <div key={p.provider_id} style={{ textAlign: "center" }}>
-                      <img
-                        src={`https://image.tmdb.org/t/p/w92${p.logo_path}`}
-                        alt={p.provider_name}
-                        style={{ width: "60px", borderRadius: "10px" }}
-                      />
-                      <p style={{ fontSize: "0.9rem" }}>{p.provider_name}</p>
-                    </div>
-                  ))}
+              )}
+
+              {/* LOCATION */}
+              {providers.rent?.length > 0 && (
+                <div>
+                  <h3 style={{ marginBottom: "12px" }}>Location</h3>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+                    {providers.rent.map((p) => (
+                      <div
+                        key={p.provider_id}
+                        style={{
+                          width: "100px",
+                          textAlign: "center",
+                          background: "#fff",
+                          padding: "10px",
+                          borderRadius: "12px",
+                          boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
+                        }}
+                      >
+                        <img
+                          src={`https://image.tmdb.org/t/p/w92${p.logo_path}`}
+                          alt={p.provider_name}
+                          style={{
+                            width: "60px",
+                            height: "60px",
+                            objectFit: "contain",
+                            marginBottom: "8px",
+                          }}
+                        />
+                        <p style={{ fontSize: "0.85rem", fontWeight: "600", color: "#333" }}>
+                          {p.provider_name}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-    
-            {/* ACHAT */}
-            {movie.providers.buy && (
-              <div style={{ marginBottom: "20px" }}>
-                <h3 style={{ marginBottom: "10px" }}>🛒 Achat</h3>
-                <div style={{ display: "flex", gap: "15px" }}>
-                  {movie.providers.buy.map((p) => (
-                    <div key={p.provider_id} style={{ textAlign: "center" }}>
-                      <img
-                        src={`https://image.tmdb.org/t/p/w92${p.logo_path}`}
-                        alt={p.provider_name}
-                        style={{ width: "60px", borderRadius: "10px" }}
-                      />
-                      <p style={{ fontSize: "0.9rem" }}>{p.provider_name}</p>
-                    </div>
-                  ))}
+              )}
+
+              {/* ACHAT */}
+              {providers.buy?.length > 0 && (
+                <div>
+                  <h3 style={{ marginBottom: "12px" }}>Achat</h3>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
+                    {providers.buy.map((p) => (
+                      <div
+                        key={p.provider_id}
+                        style={{
+                          width: "100px",
+                          textAlign: "center",
+                          background: "#fff",
+                          padding: "10px",
+                          borderRadius: "12px",
+                          boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
+                        }}
+                      >
+                        <img
+                          src={`https://image.tmdb.org/t/p/w92${p.logo_path}`}
+                          alt={p.provider_name}
+                          style={{
+                            width: "60px",
+                            height: "60px",
+                            objectFit: "contain",
+                            marginBottom: "8px",
+                          }}
+                        />
+                        <p style={{ fontSize: "0.85rem", fontWeight: "600", color: "#333" }}>
+                          {p.provider_name}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
+
+
 
 
       {/* ░░░░░░░░░░ Distribution ░░░░░░░░░░ */}
