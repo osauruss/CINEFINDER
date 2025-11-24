@@ -13,6 +13,60 @@ const MovieDetails = ({ token, user, setUser }) => {
   const [providers, setProviders] = useState(null);
 
   const [addedToWatchlist, setAddedToWatchlist] = useState(false);
+  const [liked, setLiked] = useState(false);
+
+useEffect(() => {
+  if (user && user.liked && movie) {
+    const isLiked = user.liked.some(
+      (item) => String(item.tmdbId) === String(movie.id)
+    );
+    setLiked(isLiked);
+  }
+}, [user, movie]);
+
+const handleLikeToggle = async () => {
+  if (!token) return alert("Veuillez vous connecter pour liker !");
+
+  if (liked) {
+    await axios.delete(
+      `http://localhost:5000/api/likedfilms/remove/${movie.id}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    setLiked(false);
+    setUser({
+      ...user,
+      liked: user.likedMovies.filter(
+        (item) => String(item.tmdbId) !== String(movie.id)
+      ),
+    });
+  } else {
+    await axios.post(
+      "http://localhost:5000/api/likedfilms/add",
+      {
+        tmdbId: movie.id,
+        title: movie.title,
+        poster: movie.poster_path,
+      },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+
+    setLiked(true);
+    setUser({
+      ...user,
+      liked: [
+        ...user.likedMovies,
+        {
+          tmdbId: movie.id,
+          title: movie.title,
+          poster: movie.poster_path,
+          addedAt: new Date().toISOString(),
+        },
+      ],
+    });
+  }
+};
+
 
   // ─────────────────────────────────────────────
   // FETCH PRINCIPAL : film + cast + crew
@@ -240,6 +294,22 @@ const MovieDetails = ({ token, user, setUser }) => {
               : "➕ Ajouter à ma Watchlist"}
           </button>
           {/* 🔼 FIN BOUTON MODIFIÉ 🔼 */}
+          <button
+  onClick={handleLikeToggle}
+  style={{
+    marginTop: "10px",
+    backgroundColor: liked ? "#e74c3c" : "#3498db",
+    color: "white",
+    border: "none",
+    padding: "10px 20px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    transition: "0.3s",
+  }}
+>
+  {liked ? "💔 Retirer le Like" : "👍 Like"}
+</button>
 
           <div
             style={{
