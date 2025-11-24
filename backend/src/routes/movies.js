@@ -28,6 +28,38 @@ router.get("/credits/:id", async (req, res) => {
   }
 });
 
+<<<<<<< HEAD
+=======
+// 🔍 Recherche de films par nom
+router.get("/search", async (req, res) => {
+  try {
+    const query = req.query.query; // ex: /api/movies/search?query=inception
+    if (!query) {
+      return res.status(400).json({ error: "Paramètre 'query' manquant" });
+    }
+
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/search/movie`,
+      {
+        params: {
+          api_key: process.env.TMDB_API_KEY,
+          query,
+          language: "fr-FR",
+        },
+      }
+    );
+
+    res.json({ results: response.data.results });
+  } catch (error) {
+    console.error("Erreur TMDB /search :", error);
+    res
+      .status(500)
+      .json({ error: "Erreur lors de la recherche de films sur TMDB" });
+  }
+});
+
+
+>>>>>>> main
 // Détails d’un film
 router.get("/details/:id", async (req, res) => {
   try {
