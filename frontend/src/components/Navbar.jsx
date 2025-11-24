@@ -1,15 +1,22 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FiLogOut, FiUser } from "react-icons/fi"; // Icônes utilisateur + logout
+import { FiLogOut, FiUser } from "react-icons/fi";
 
 const Navbar = ({ token, setToken, user }) => {
   const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false); // état du menu déroulant
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [query, setQuery] = useState("");
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setToken("");
     navigate("/login");
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+    navigate(`/movies?query=${query}`);
   };
 
   return (
@@ -24,14 +31,48 @@ const Navbar = ({ token, setToken, user }) => {
         position: "relative",
       }}
     >
-      {/* === Liens à gauche === */}
-      <div style={{ display: "flex", gap: "20px" }}>
+      {/* === Zone gauche : Liens + Search === */}
+      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
         <Link to="/" style={{ color: "#fff", textDecoration: "none" }}>
           🏠 Accueil
         </Link>
+
         <Link to="/movies" style={{ color: "#fff", textDecoration: "none" }}>
           🎬 Films
         </Link>
+
+        {/* --- Search Bar compacte --- */}
+        <form onSubmit={handleSearch} style={{ display: "flex", gap: "5px",marginRight :"40px"}}>
+          <input
+            type="text"
+            placeholder="Recherche..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            style={{
+              padding: "5px 8px",
+              fontSize: "14px",
+              borderRadius: "4px",
+              border: "1px solid #444",
+              background: "#333",
+              color: "white",
+              width: "140px",
+            }}
+          />
+          <button
+            type="submit"
+            style={{
+              padding: "5px 10px",
+              background: "#555",
+              border: "none",
+              borderRadius: "4px",
+              color: "white",
+              cursor: "pointer",
+              fontSize: "13px",
+            }}
+          >
+            OK
+          </button>
+        </form>
       </div>
 
       {/* === Zone utilisateur à droite === */}
@@ -44,16 +85,13 @@ const Navbar = ({ token, setToken, user }) => {
             >
               Se connecter
             </Link>
-            <Link
-              to="/register"
-              style={{ color: "#61dafb", textDecoration: "none" }}
-            >
+
+            <Link to="/register" style={{ color: "#61dafb", textDecoration: "none" }}>
               S’inscrire
             </Link>
           </>
         ) : (
           <div style={{ position: "relative" }}>
-            {/* Bouton nom utilisateur */}
             <button
               onClick={() => setMenuOpen(!menuOpen)}
               style={{
@@ -71,7 +109,6 @@ const Navbar = ({ token, setToken, user }) => {
               {user?.username || "Mon Compte"}
             </button>
 
-            {/* Menu déroulant */}
             {menuOpen && (
               <div
                 style={{
