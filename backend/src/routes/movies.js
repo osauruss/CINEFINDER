@@ -15,6 +15,70 @@ router.get("/popular", async (req, res) => {
   }
 });
 
+// Pour récuperer les providers d’un film
+router.get("/:id/providers", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/${id}/watch/providers?api_key=${process.env.TMDB_API_KEY}`
+    );
+
+    const data = await response.json();
+
+    // On récupère l'entrée FR (ou autre pays si tu veux)
+    const info = data.results?.FR;
+
+    if (!info) {
+      return res.json({ providers: null });
+    }
+
+    res.json({
+      link: info.link,
+      flatrate: info.flatrate || [],
+      rent: info.rent || [],
+      buy: info.buy || []
+    });
+
+  } catch (err) {
+    console.error("Erreur providers:", err);
+    res.status(500).json({ error: "Erreur serveur providers" });
+  }
+});
+
+
+// Pour récuperer les movie trailer de YouTube
+router.get("/:id/trailer", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const response = await fetch(
+      `https://api.themoviedb.org/3/movie/${id}/videos?api_key=${process.env.TMDB_API_KEY}&language=fr-FR`
+    );
+
+    const data = await response.json();
+
+    // Trouver le trailer officiel
+    const trailer = data.results.find(
+      (v) =>
+        v.type === "Trailer" &&
+        v.site === "YouTube"
+    );
+
+    if (!trailer) {
+      return res.json({ trailer: null });
+    }
+
+    res.json({
+      trailerKey: trailer.key,
+      name: trailer.name
+    });
+
+  } catch (err) {
+    console.error("Erreur trailer:", err);
+    res.status(500).json({ error: "Erreur serveur trailer" });
+  }
+});
 
 
 router.get("/credits/:id", async (req, res) => {
