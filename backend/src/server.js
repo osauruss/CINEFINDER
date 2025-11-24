@@ -57,6 +57,17 @@ async function startServer() {
     const userRoutes = require("./routes/user");
     app.use("/api/users", userRoutes);
 
+    
+    const likedFilmsRoutes = require("./routes/likedfilms");
+    app.use("/api/likedfilms", likedFilmsRoutes);
+    app.use("/api/likedfilms/remove/:id", likedFilmsRoutes);
+     
+  
+
+
+
+  
+
 
 
     app.listen(port, () => {
