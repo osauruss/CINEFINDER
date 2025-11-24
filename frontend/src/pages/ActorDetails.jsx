@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-const ActorDetails = () => {
+// 1. On récupère token, user, et setUser
+const ActorDetails = ({ token, user, setUser }) => {
   const { id } = useParams();
   const [actor, setActor] = useState(null);
   const [movies, setMovies] = useState([]);
@@ -18,39 +19,79 @@ const ActorDetails = () => {
         const resMovies = await axios.get(`http://localhost:5000/api/actors/movies/${id}`);
         setMovies(resMovies.data.cast);
 
-        // Vérifier si acteur déjà dans les préférences
-        const token = localStorage.getItem("token");
-        if (token) {
-          const userRes = await axios.get("http://localhost:5000/api/users/me", {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setIsFavorite(userRes.data.preferences?.actors?.includes(id));
+        // 2. Vérification via l'objet 'user' global (plus rapide et fiable)
+        if (user && user.preferences && user.preferences.actors) {
+           const alreadyFav = user.preferences.actors.some(
+             (actorId) => String(actorId) === String(id)
+           );
+           setIsFavorite(alreadyFav);
         }
       } catch (err) {
         console.error("Erreur de chargement :", err);
       }
     };
     fetchActor();
-  }, [id]);
+  }, [id, user]); // On ajoute 'user' aux dépendances
 
-  const handleAddFavorite = async () => {
-    const token = localStorage.getItem("token");
+  // 3. Fonction Toggle (Ajout / Suppression)
+  const handleFavoriteToggle = async () => {
     if (!token) {
       navigate("/login");
       return;
     }
 
-    try {
-      await axios.post(
-        `http://localhost:5000/api/users/preferences/actors/${id}`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setIsFavorite(true);
-      alert(`${actor.name} a été ajouté à vos acteurs préférés ❤️`);
-    } catch (err) {
-      console.error("Erreur lors de l’ajout du favori :", err);
-      alert("Une erreur est survenue lors de l’ajout aux favoris.");
+    // CAS 1 : SUPPRESSION
+    if (isFavorite) {
+      try {
+        await axios.delete(
+          `http://localhost:5000/api/users/preferences/actors/${id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        setIsFavorite(false);
+
+        // Mise à jour de l'état global
+        if (user && user.preferences) {
+          setUser({
+            ...user,
+            preferences: {
+              ...user.preferences,
+              actors: user.preferences.actors.filter(aId => String(aId) !== String(id))
+            }
+          });
+        }
+      } catch (err) {
+        console.error("Erreur suppression favori :", err);
+        alert("Erreur lors de la suppression.");
+      }
+    } 
+    
+    // CAS 2 : AJOUT
+    else {
+      try {
+        await axios.post(
+          `http://localhost:5000/api/users/preferences/actors/${id}`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        
+        setIsFavorite(true);
+
+        // Mise à jour de l'état global
+        if (user) {
+          const currentActors = user.preferences?.actors || [];
+          setUser({
+            ...user,
+            preferences: {
+              ...user.preferences,
+              actors: [...currentActors, id] // On ajoute l'ID
+            }
+          });
+        }
+      } catch (err) {
+        console.error("Erreur ajout favori :", err);
+        alert("Erreur lors de l'ajout.");
+      }
     }
   };
 
@@ -98,29 +139,29 @@ const ActorDetails = () => {
             }}
           />
 
-          {/* ✅ Bouton Ajouter aux favoris */}
+          {/* ✅ Bouton Modifier (Toggle) */}
           <button
-            onClick={handleAddFavorite}
-            disabled={isFavorite}
+            onClick={handleFavoriteToggle}
             style={{
               marginTop: "20px",
-              backgroundColor: isFavorite ? "#ccc" : "#f5b50a",
-              color: isFavorite ? "#555" : "#111",
+              // Rouge si favori, Jaune si pas favori
+              backgroundColor: isFavorite ? "#e74c3c" : "#f5b50a",
+              color: isFavorite ? "#fff" : "#111",
               fontWeight: "600",
               padding: "10px 20px",
               border: "none",
               borderRadius: "8px",
-              cursor: isFavorite ? "default" : "pointer",
-              transition: "background-color 0.2s ease",
+              cursor: "pointer",
+              transition: "0.2s ease",
             }}
             onMouseEnter={(e) => {
-              if (!isFavorite) e.currentTarget.style.backgroundColor = "#ffcc33";
+               e.currentTarget.style.opacity = "0.9";
             }}
             onMouseLeave={(e) => {
-              if (!isFavorite) e.currentTarget.style.backgroundColor = "#f5b50a";
+               e.currentTarget.style.opacity = "1";
             }}
           >
-            {isFavorite ? "❤️ Déjà dans vos favoris" : "➕ Ajouter aux acteurs préférés"}
+            {isFavorite ? "💔 Retirer des favoris" : "❤️ Ajouter aux favoris"}
           </button>
         </div>
 
@@ -258,8 +299,6 @@ const ActorDetails = () => {
 };
 
 export default ActorDetails;
-
-
 
 
 //import React, { useEffect, useState } from "react";

@@ -2,21 +2,35 @@
 const jwt = require("jsonwebtoken");
 
 const authMiddleware = (req, res, next) => {
-const token = req.headers["authorization"]?.split(" ")[1]; // Récupère le 'Bearer TOKEN'
-  if (!token) {
-    return res.status(401).json({ message: "Accès non autorisé, token manquant" });
-  }
+  console.log("\n🔥 [DEBUG MIDDLEWARE] --------------------------------");
+  
+  const authHeader = req.headers["authorization"];
+  console.log("🔥 1. Header reçu :", authHeader);
 
-  try {
-    // Vérifie le token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
-       // Ajoute l'ID de l'utilisateur à l'objet 'req' pour les prochaines routes
-    req.userId = decoded.id; 
-    next(); // Passe au prochain middleware ou à la route
-  } catch (err) {
-    return res.status(401).json({ message: "Token invalide" });
-  }
+  const token = authHeader && authHeader.split(" ")[1];
+  
+  if (!token) {
+    console.log("🔥 ❌ Pas de token !");
+    return res.status(401).json({ message: "Token manquant" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    console.log("🔥 2. Token décodé (Brut) :", decoded);
+
+    // On cherche l'ID partout où il pourrait se cacher
+    const userId = decoded.id || decoded._id || decoded.userId;
+    console.log("🔥 3. ID trouvé :", userId);
+
+    req.userId = userId;
+    
+    console.log("🔥 [FIN DEBUG MIDDLEWARE] Passage à la route suivante -->\n");
+    next();
+
+  } catch (err) {
+    console.error("🔥 ❌ Erreur JWT :", err.message);
+    return res.status(403).json({ message: "Token invalide" });
+  }
 };
 
-module.exports = authMiddleware; // N'oublie pas d'exporter !
+module.exports = authMiddleware;

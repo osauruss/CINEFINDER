@@ -2,29 +2,14 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
-const jwt = require("jsonwebtoken");
 
-// Middleware d’authentification (vérifie le token)
-function authMiddleware(req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).json({ message: "Token manquant" });
+const authMiddleware = require("../middleware/authMiddleware");
 
-  const token = authHeader.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "Token invalide" });
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // contient l’ID de l’utilisateur
-    next();
-  } catch (err) {
-    res.status(403).json({ message: "Token invalide ou expiré" });
-  }
-}
-
-// 🔹 Route pour récupérer les infos du user connecté
+//  Route pour récupérer les infos du user connecté
 router.get("/me", authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    // 2. On utilise req.userId (comme défini dans le middleware officiel)
+    const user = await User.findById(req.userId);
     if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
     res.json(user);
   } catch (err) {
@@ -32,13 +17,15 @@ router.get("/me", authMiddleware, async (req, res) => {
   }
 });
 
-// 🔹 Ajouter un acteur aux préférences
+//  Ajouter un acteur aux préférences
 router.post("/preferences/actors/:actorId", authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
+    // 3. Ici aussi, on utilise req.userId
+    const user = await User.findById(req.userId);
     if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
 
     if (!user.preferences) user.preferences = { genres: [], actors: [] };
+    if (!user.preferences.actors) user.preferences.actors = []; // Sécurité supplémentaire
 
     // Évite les doublons
     if (!user.preferences.actors.includes(req.params.actorId)) {
@@ -49,6 +36,36 @@ router.post("/preferences/actors/:actorId", authMiddleware, async (req, res) => 
     res.json({ success: true, actors: user.preferences.actors });
   } catch (err) {
     console.error("Erreur lors de l’ajout d’un acteur :", err);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+});
+
+// 🗑️ Supprimer un acteur des favoris
+router.delete("/preferences/actors/:id", authMiddleware, async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    // Debug (tu pourras les enlever après)
+    console.log("🚀 Route DELETE appelée");
+    console.log("👉 ID de l'utilisateur (req.userId) :", req.userId);
+    
+    // 4. On utilise req.userId
+    const user = await User.findById(req.userId);
+    
+    if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
+
+    if (user.preferences && user.preferences.actors) {
+      // Filtrage avec conversion String pour sécurité
+      user.preferences.actors = user.preferences.actors.filter(
+        (actorId) => String(actorId) !== String(id)
+      );
+      
+      await user.save();
+    }
+
+    res.json({ message: "Acteur retiré des favoris", user });
+  } catch (err) {
+    console.error(err);
     res.status(500).json({ message: "Erreur serveur" });
   }
 });
