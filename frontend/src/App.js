@@ -62,7 +62,10 @@ const App = () => {
         {/* On passe 'user' pour qu'il n'ait pas à le fetcher lui-même */}
         <Route path="/profile" element={<Profile token={token} user={user} />} />
 
-        <Route path="/actor/:id" element={<ActorDetails />} />
+        <Route 
+         path="/actor/:id" 
+         element={<ActorDetails token={token} user={user} setUser={setUser} />} 
+        />
         <Route path="/login" element={<Login setToken={setToken} />} />
         <Route path="/register" element={<Register />} />
 
