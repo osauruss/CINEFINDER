@@ -1,0 +1,22 @@
+
+
+Voir l’état du dépôt
+git status
+
+git pull pour recup le reste 
+
+👉 Montre les fichiers modifiés, ajoutés ou non suivis.
+
+Ajouter un fichier à suivre
+git add nom_du_fichier.txt
+(Pour tout ajouter : git add .)
+
+git commit -m "Description claire du changement"
+
+git push
+
+
+POUR FUSIONNER  ENVOYER DEV DANS MAIN 
+git switch main
+git merge dev -m "v1.1"
+git push
