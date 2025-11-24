@@ -28,8 +28,6 @@ router.get("/credits/:id", async (req, res) => {
   }
 });
 
-<<<<<<< HEAD
-=======
 // 🔍 Recherche de films par nom
 router.get("/search", async (req, res) => {
   try {
@@ -59,7 +57,6 @@ router.get("/search", async (req, res) => {
 });
 
 
->>>>>>> main
 // Détails d’un film
 router.get("/details/:id", async (req, res) => {
   try {
