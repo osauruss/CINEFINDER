@@ -70,6 +70,7 @@ const MovieDetails = ({ token, user, setUser }) => {
   // ─────────────────────────────────────────────
   useEffect(() => {
     if (user && user.watchlist && movie) {
+      // Utilisation de String() pour éviter les erreurs de type (number vs string)
       const isAlreadyInList = user.watchlist.some(
         (item) => String(item.tmdbId) === String(movie.id)
       );
@@ -77,39 +78,71 @@ const MovieDetails = ({ token, user, setUser }) => {
     }
   }, [user, movie]);
 
-  const addToWatchlist = async () => {
-    if (!token) return alert("Veuillez vous connecter pour ajouter à la watchlist !");
+  // ─────────────────────────────────────────────
+  // 🔄 GESTION DU BOUTON (AJOUT / SUPPRESSION)
+  // ─────────────────────────────────────────────
+  const handleWatchlistToggle = async () => {
+    if (!token) return alert("Veuillez vous connecter pour gérer votre watchlist !");
 
-    try {
-      await axios.post(
-        "http://localhost:5000/api/watchlist/add",
-        {
-          tmdbId: movie.id,
-          title: movie.title,
-          poster: movie.poster_path,
-        },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+    // CAS 1 : SUPPRESSION (Si déjà ajouté)
+    if (addedToWatchlist) {
+      try {
+        await axios.delete(
+          `http://localhost:5000/api/watchlist/remove/${movie.id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
 
-      setAddedToWatchlist(true);
+        setAddedToWatchlist(false);
 
-      if (user) {
-        setUser({
-          ...user,
-          watchlist: [
-            ...user.watchlist,
-            {
-              tmdbId: movie.id,
-              title: movie.title,
-              poster: movie.poster_path,
-              addedAt: new Date().toISOString(),
-            },
-          ],
-        });
+        // Mise à jour de l'état global utilisateur (Retrait du film)
+        if (user) {
+          setUser({
+            ...user,
+            watchlist: user.watchlist.filter(
+              (item) => String(item.tmdbId) !== String(movie.id)
+            ),
+          });
+        }
+      } catch (err) {
+        console.error(err);
+        alert("Erreur lors de la suppression !");
       }
-    } catch (err) {
-      console.error(err);
-      alert(err.response?.data?.message || "Erreur lors de l'ajout !");
+    } 
+    
+    // CAS 2 : AJOUT (Si pas encore ajouté)
+    else {
+      try {
+        await axios.post(
+          "http://localhost:5000/api/watchlist/add",
+          {
+            tmdbId: movie.id,
+            title: movie.title,
+            poster: movie.poster_path,
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+
+        setAddedToWatchlist(true);
+
+        // Mise à jour de l'état global utilisateur (Ajout du film)
+        if (user) {
+          setUser({
+            ...user,
+            watchlist: [
+              ...user.watchlist,
+              {
+                tmdbId: movie.id,
+                title: movie.title,
+                poster: movie.poster_path,
+                addedAt: new Date().toISOString(),
+              },
+            ],
+          });
+        }
+      } catch (err) {
+        console.error(err);
+        alert(err.response?.data?.message || "Erreur lors de l'ajout !");
+      }
     }
   };
 
@@ -178,23 +211,35 @@ const MovieDetails = ({ token, user, setUser }) => {
             {movie.overview || "Aucun résumé disponible."}
           </p>
 
+          {/* 🔽 BOUTON MODIFIÉ ICI 🔽 */}
           <button
-            onClick={addToWatchlist}
-            disabled={addedToWatchlist}
+            onClick={handleWatchlistToggle}
+            // On a retiré le "disabled" pour pouvoir cliquer même si ajouté
             style={{
               marginTop: "15px",
-              backgroundColor: addedToWatchlist ? "#4caf50" : "#f5b50a",
+              // Rouge si ajouté (pour retirer), Jaune si pas ajouté
+              backgroundColor: addedToWatchlist ? "#e74c3c" : "#f5b50a",
               color: "white",
               border: "none",
               padding: "10px 20px",
               borderRadius: "8px",
-              cursor: addedToWatchlist ? "default" : "pointer",
+              cursor: "pointer",
+              fontWeight: "bold",
+              transition: "0.3s",
+            }}
+            onMouseEnter={(e) => {
+               // Petit effet visuel
+               e.currentTarget.style.opacity = "0.9";
+            }}
+            onMouseLeave={(e) => {
+               e.currentTarget.style.opacity = "1";
             }}
           >
             {addedToWatchlist
-              ? "✅ Ajouté à la Watchlist"
+              ? "❌ Retirer de la Watchlist"
               : "➕ Ajouter à ma Watchlist"}
           </button>
+          {/* 🔼 FIN BOUTON MODIFIÉ 🔼 */}
 
           <div
             style={{
@@ -382,7 +427,6 @@ const MovieDetails = ({ token, user, setUser }) => {
 };
 
 export default MovieDetails;
-
 /*
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
