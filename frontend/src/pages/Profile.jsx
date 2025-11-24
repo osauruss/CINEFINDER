@@ -146,51 +146,67 @@ const Profile = ({ token, user }) => {
         )}
       </div>
 
-      {/* ⭐ Films aimés */}
-      <div style={{ marginTop: "40px" }}>
-        <h3 style={{ marginBottom: "15px" }}>⭐ Films aimés (vus)</h3>
-        {sortedLikedMovies.length > 0 ? (
-          <div style={{ display: "flex", overflowX: "auto", gap: "20px", paddingBottom: "15px" }}>
-            {sortedLikedMovies.map((movie) => (
-              <div
-                key={movie.tmdbId}
-                style={{
-                  minWidth: "180px",
-                  background: "#fff",
-                  borderRadius: "12px",
-                  boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                  padding: "10px",
-                  textAlign: "center",
-                  flexShrink: 0,
-                  transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-5px)";
-                  e.currentTarget.style.boxShadow = "0 6px 14px rgba(0,0,0,0.15)";
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
-                }}
-              >
-                <Link to={`/movie/${movie.tmdbId}`} style={{ textDecoration: "none", color: "inherit" }}>
-                  <img
-                    src={`https://image.tmdb.org/t/p/w200${movie.poster || ""}`}
-                    alt={movie.title}
-                    style={{ borderRadius: "10px", width: "100%" }}
-                  />
-                  <h4 style={{ marginTop: "8px", fontSize: "15px" }}>{movie.title}</h4>
-                  <div style={{ display: "flex", justifyContent: "center", marginTop: "6px" }}>
-                    <CircularRating value={movie.rating || 0} />
-                  </div>
-                </Link>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p>Aucun film aimé.</p>
-        )}
-      </div>
+     {/* ⭐ Films aimés */}
+<div style={{ marginTop: "40px" }}>
+  <h3 style={{ marginBottom: "15px" }}>⭐ Films aimés</h3>
+
+  {sortedLikedMovies.length > 0 ? (
+    <div
+      style={{
+        display: "flex",
+        overflowX: "auto",
+        gap: "20px",
+        paddingBottom: "15px",
+      }}
+    >
+      {sortedLikedMovies.map((movie) => (
+        <div
+          key={movie.tmdbId}
+          style={{
+            minWidth: "180px",
+            background: "#fff",
+            borderRadius: "12px",
+            boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+            padding: "10px",
+            textAlign: "center",
+            flexShrink: 0,
+            transition: "transform 0.2s ease, box-shadow 0.2s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "translateY(-5px)";
+            e.currentTarget.style.boxShadow = "0 6px 14px rgba(0,0,0,0.15)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
+          }}
+        >
+          <Link
+            to={`/movie/${movie.tmdbId}`}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <img
+              src={`https://image.tmdb.org/t/p/w200${movie.poster || ""}`}
+              alt={movie.title}
+              style={{ borderRadius: "10px", width: "100%" }}
+            />
+
+            <h4 style={{ marginTop: "8px", fontSize: "15px" }}>
+              {movie.title}
+            </h4>
+
+            {/* tu peux enlever rating si tu veux */}
+            <div style={{ display: "flex", justifyContent: "center", marginTop: "6px" }}>
+              <CircularRating value={movie.rating || 70} />
+            </div>
+          </Link>
+        </div>
+      ))}
+    </div>
+  ) : (
+    <p>Aucun film aimé.</p>
+  )}
+</div>
 
       {/* 🎬 Watchlist */}
       <div style={{ marginTop: "40px" }}>
