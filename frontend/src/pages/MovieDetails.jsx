@@ -266,38 +266,38 @@ const handleLikeToggle = async () => {
           </p>
 
           {/* 🔽 BOUTON MODIFIÉ ICI 🔽 */}
-          <button
-            onClick={handleWatchlistToggle}
-            // On a retiré le "disabled" pour pouvoir cliquer même si ajouté
-            style={{
-              marginTop: "15px",
-              // Rouge si ajouté (pour retirer), Jaune si pas ajouté
-              backgroundColor: addedToWatchlist ? "#e74c3c" : "#f5b50a",
-              color: "white",
-              border: "none",
-              padding: "10px 20px",
-              borderRadius: "8px",
-              cursor: "pointer",
-              fontWeight: "bold",
-              transition: "0.3s",
-            }}
-            onMouseEnter={(e) => {
-               // Petit effet visuel
-               e.currentTarget.style.opacity = "0.9";
-            }}
-            onMouseLeave={(e) => {
-               e.currentTarget.style.opacity = "1";
-            }}
-          >
-            {addedToWatchlist
-              ? "❌ Retirer de la Watchlist"
-              : "➕ Ajouter à ma Watchlist"}
-          </button>
-          {/* 🔼 FIN BOUTON MODIFIÉ 🔼 */}
-          <button
+<button
+  onClick={handleWatchlistToggle}
+  style={{
+    marginTop: "15px",
+    marginRight: "15px", // ✨ C'est cette ligne qui crée l'espace !
+    // Rouge si ajouté (pour retirer), Jaune si pas ajouté
+    backgroundColor: addedToWatchlist ? "#e74c3c" : "#f5b50a",
+    color: "white",
+    border: "none",
+    padding: "10px 20px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    fontWeight: "bold",
+    transition: "0.3s",
+  }}
+  onMouseEnter={(e) => {
+    e.currentTarget.style.opacity = "0.9";
+  }}
+  onMouseLeave={(e) => {
+    e.currentTarget.style.opacity = "1";
+  }}
+>
+  {addedToWatchlist
+    ? "❌ Retirer de la Watchlist"
+    : "➕ Ajouter à ma Watchlist"}
+</button>
+{/* 🔼 FIN BOUTON MODIFIÉ 🔼 */}
+
+<button
   onClick={handleLikeToggle}
   style={{
-    marginTop: "10px",
+    marginTop: "15px", // J'ai mis 15px ici aussi pour qu'il soit aligné avec l'autre
     backgroundColor: liked ? "#e74c3c" : "#3498db",
     color: "white",
     border: "none",
@@ -310,7 +310,6 @@ const handleLikeToggle = async () => {
 >
   {liked ? "💔 Retirer le Like" : "👍 Like"}
 </button>
-
           <div
             style={{
               marginTop: "20px",
