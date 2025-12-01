@@ -133,6 +133,23 @@ router.get("/details/:id", async (req, res) => {
   }
 });
 
+
+// 🔍 Découvrir des films par genre (pour les recommandations)
+router.get("/discover", async (req, res) => {
+  try {
+    const { with_genres } = req.query; // On récupère l'ID du genre
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.TMDB_API_KEY}&language=fr-FR&sort_by=popularity.desc&with_genres=${with_genres}`
+    );
+    res.json(response.data);
+  } catch (err) {
+    console.error("Erreur discover:", err.message);
+    res.status(500).json({ error: "Erreur serveur TMDB" });
+  }
+});
+
+module.exports = router;
+
 module.exports = router;
 
 

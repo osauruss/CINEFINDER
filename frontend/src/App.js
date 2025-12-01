@@ -46,7 +46,7 @@ const App = () => {
         <Navbar token={token} setToken={setToken} user={user} />
         <Routes>
           <Route path="/" element={<Home token={token} />} />
-          <Route path="/movies" element={<Movies />} />
+          <Route path="/movies" element={<Movies user={user} />} />
           <Route path="/profile" element={<Profile token={token} user={user} />} />
           <Route 
            path="/actor/:id" 
