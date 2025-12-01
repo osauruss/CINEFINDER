@@ -1,3 +1,6 @@
+html {
+  background-color: #1a1a1a;
+}
 .App {
   text-align: center;
 }
@@ -13,8 +16,15 @@
   }
 }
 
+body {
+  background-color: #1a1a1a;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+}
+
 .App-header {
-  background-color: #282c34;
+  background-color: #1a1a1a;
   min-height: 100vh;
   display: flex;
   flex-direction: column;

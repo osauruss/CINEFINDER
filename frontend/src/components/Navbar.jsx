@@ -31,49 +31,89 @@ const Navbar = ({ token, setToken, user }) => {
         position: "relative",
       }}
     >
-      {/* === Zone gauche : Liens + Search === */}
-      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-        <Link to="/" style={{ color: "#fff", textDecoration: "none" }}>
-          🏠 Accueil
+      {/* === Zone gauche : Favicon + Films === */}
+      <div style={{ display: "flex", alignItems: "center", gap: "25px" }}>
+        <Link 
+          to="/" 
+          style={{ 
+            color: "#fff", 
+            textDecoration: "none",
+            fontSize: "20px",
+            fontWeight: "bold",
+            letterSpacing: "0.5px"
+          }}
+        >
+          CineFinder
         </Link>
 
-        <Link to="/movies" style={{ color: "#fff", textDecoration: "none" }}>
-          🎬 Films
+        <Link to="/movies" style={{ color: "#fff", textDecoration: "none", fontSize: "16px" }}>
+            Films
         </Link>
-
-        {/* --- Search Bar compacte --- */}
-        <form onSubmit={handleSearch} style={{ display: "flex", gap: "5px",marginRight :"40px"}}>
-          <input
-            type="text"
-            placeholder="Recherche..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            style={{
-              padding: "5px 8px",
-              fontSize: "14px",
-              borderRadius: "4px",
-              border: "1px solid #444",
-              background: "#333",
-              color: "white",
-              width: "140px",
-            }}
-          />
-          <button
-            type="submit"
-            style={{
-              padding: "5px 10px",
-              background: "#555",
-              border: "none",
-              borderRadius: "4px",
-              color: "white",
-              cursor: "pointer",
-              fontSize: "13px",
-            }}
-          >
-            OK
-          </button>
-        </form>
       </div>
+
+      {/* === Barre de recherche centrée === */}
+      <form 
+        onSubmit={handleSearch} 
+        style={{ 
+          position: "absolute",
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex", 
+          gap: "8px"
+        }}
+      >
+        <input
+          type="text"
+          placeholder="Rechercher un film..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          style={{
+            padding: "10px 20px",
+            fontSize: "14px",
+            borderRadius: "25px",
+            border: "none",
+            background: "#333",
+            color: "white",
+            width: "300px",
+            outline: "none",
+            transition: "all 0.3s ease",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+          }}
+          onFocus={(e) => {
+            e.target.style.background = "#3a3a3a";
+            e.target.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
+          }}
+          onBlur={(e) => {
+            e.target.style.background = "#333";
+            e.target.style.boxShadow = "0 2px 8px rgba(0,0,0,0.2)";
+          }}
+        />
+        <button
+          type="submit"
+          style={{
+            padding: "10px 24px",
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            border: "none",
+            borderRadius: "25px",
+            color: "white",
+            cursor: "pointer",
+            fontSize: "14px",
+            fontWeight: "500",
+            transition: "all 0.3s ease",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = "translateY(-2px)";
+            e.target.style.boxShadow = "0 4px 12px rgba(102, 126, 234, 0.4)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = "translateY(0)";
+            e.target.style.boxShadow = "0 2px 8px rgba(0,0,0,0.2)";
+          }}
+        >
+          Rechercher
+        </button>
+      </form>
 
       {/* === Zone utilisateur à droite === */}
       <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
@@ -87,7 +127,7 @@ const Navbar = ({ token, setToken, user }) => {
             </Link>
 
             <Link to="/register" style={{ color: "#61dafb", textDecoration: "none" }}>
-              S’inscrire
+              S'inscrire
             </Link>
           </>
         ) : (
@@ -165,179 +205,3 @@ const Navbar = ({ token, setToken, user }) => {
 };
 
 export default Navbar;
-
-
-/*
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { FiLogOut, FiUser } from "react-icons/fi"; // Icônes utilisateur + logout
-
-const Navbar = ({ token, setToken }) => {
-  const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false); // état du menu déroulant
-
-  const handleLogout = () => {
-    localStorage.removeItem("token"); // Supprime le token du stockage local
-    setToken(""); // Vide le token dans le state React
-    navigate("/login"); // Redirige vers la page de connexion
-  };
-
-  return (
-    <nav
-      style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        padding: "15px 40px",
-        backgroundColor: "#222",
-        color: "#fff",
-      }}
-    >
-      {/* === Liens à gauche === *}
-      <div style={{ display: "flex", gap: "20px" }}>
-        <Link to="/" style={{ color: "#fff", textDecoration: "none" }}>
-          🏠 Accueil
-        </Link>
-        <Link to="/movies" style={{ color: "#fff", textDecoration: "none" }}>
-          🎬 Films
-        </Link>
-      </div>
-
-      {/* === Zone utilisateur à droite === *}
-      <div style={{ display: "flex", gap: "20px", alignItems: "center" }}>
-        {!token ? (
-          <>
-            <Link
-              to="/login"
-              style={{ color: "#61dafb", textDecoration: "none" }}
-            >
-              Se connecter
-            </Link>
-            <Link
-              to="/register"
-              style={{ color: "#61dafb", textDecoration: "none" }}
-            >
-              S’inscrire
-            </Link>
-          </>
-        ) : (
-          <>
-            <Link
-              to="/profile"
-              style={{ color: "#fff", textDecoration: "none" }}
-            >
-              👤 Mon Profil
-            </Link>
-            <button
-              onClick={handleLogout}
-              style={{
-                backgroundColor: "#ff4d4d",
-                color: "#fff",
-                border: "none",
-                borderRadius: "5px",
-                padding: "5px 10px",
-                cursor: "pointer",
-              }}
-            >
-              🚪 Déconnexion
-            </button>
-          </>
-        )}
-      </div>
-    </nav>
-  );
-};
-
-export default Navbar; */
-
-
-
-/*import React from "react";
-import { Link } from "react-router-dom";
-
-const Navbar = ({ token, setToken }) => {
-  // Fonction de déconnexion (vide le token)
-  const handleLogout = () => {
-    setToken("");
-    localStorage.removeItem("token"); // optionnel si tu stockes le token
-  };
-
-  return (
-    <nav
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        gap: "20px",
-        padding: "15px",
-        backgroundColor: "#222",
-      }}
-    >
-      {/* Lien vers la page d'accueil *//*}
-      <Link to="/" style={{ color: "#fff", textDecoration: "none" }}>
-        Home
-      </Link>
-
-      {/* Lien vers films populaires *//*}
-      <Link to="/movies" style={{ color: "#fff", textDecoration: "none" }}>
-        🎬 Films
-      </Link>
-
-      {/* Si pas connecté → Login et Register *//*}
-      {!token ? (
-        <>
-          <Link to="/login" style={{ color: "#fff", textDecoration: "none" }}>
-            Login
-          </Link>
-          <Link
-            to="/register"
-            style={{ color: "#fff", textDecoration: "none" }}
-          >
-            Register
-          </Link>
-        </>
-      ) : (
-        // Si connecté → bouton de déconnexion
-        <button
-          onClick={handleLogout}
-          style={{
-            background: "transparent",
-            border: "1px solid #fff",
-            color: "#fff",
-            cursor: "pointer",
-            borderRadius: "5px",
-            padding: "5px 10px",
-          }}
-        >
-          🚪 Logout
-        </button>
-      )}
-    </nav>
-  );
-};
-
-export default Navbar;
-
-*/
-/*
-
-import React from "react";
-import { Link } from "react-router-dom";
-
-const Navbar = () => {
-  return (
-    <nav style={{
-      display: "flex",
-      justifyContent: "center",
-      gap: "20px",
-      padding: "15px",
-      backgroundColor: "#222",
-      color: "#761a1aff"
-    }}>
-      <Link to="/" style={{ color: "#fff", textDecoration: "none" }}>Home</Link>
-      <Link to="/login" style={{ color: "#fff", textDecoration: "none" }}>Login</Link>
-      <Link to="/register" style={{ color: "#fff", textDecoration: "none" }}>Register</Link>
-    </nav>
-  );
-};
-
-export default Navbar;*/
