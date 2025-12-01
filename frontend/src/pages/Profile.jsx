@@ -3,9 +3,75 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
+
+
 const Profile = ({ token, user }) => {
   // État pour stocker les objets complets des acteurs (nom, image, id...)
   const [favActors, setFavActors] = useState([]);
+
+  const [selectedGenres, setSelectedGenres] = useState([]);
+
+
+    // Pour gérer les genres sélectionnés
+  useEffect(() => {
+  if (user?.preferences?.genres) {
+    const genreIds = TMDB_GENRES
+      .filter(g => user.preferences.genres.includes(g.name))
+      .map(g => g.id);
+    setSelectedGenres(genreIds);
+  }
+  }, [user]);
+
+
+
+  // Liste de tous les genres disponibles
+  const TMDB_GENRES = [
+  { id: 28, name: "Action" },
+  { id: 12, name: "Aventure" },
+  { id: 16, name: "Animation" },
+  { id: 35, name: "Comédie" },
+  { id: 80, name: "Crime" },
+  { id: 99, name: "Documentaire" },
+  { id: 18, name: "Drame" },
+  { id: 10751, name: "Famille" },
+  { id: 14, name: "Fantastique" },
+  { id: 36, name: "Historique" },
+  { id: 27, name: "Horreur" },
+  { id: 10402, name: "Musique" },
+  { id: 9648, name: "Mystère" },
+  { id: 10749, name: "Romance" },
+  { id: 878, name: "Science-Fiction" },
+  { id: 10770, name: "Téléfilm" },
+  { id: 53, name: "Thriller" },
+  { id: 10752, name: "Guerre" },
+  { id: 37, name: "Western" },
+];
+
+
+  const toggleGenre = (id) => {
+  if (selectedGenres.includes(id)) {
+    setSelectedGenres(selectedGenres.filter(g => g !== id));
+  } else {
+    setSelectedGenres([...selectedGenres, id]);
+  }
+};
+
+
+
+  const saveGenres = async () => {
+  try {
+    await axios.post(
+      "http://localhost:5000/api/users/preferences/genres",
+      { genres: selectedGenres }, // ici ce sont les IDs TMDB
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    alert("Genres sauvegardés !");
+  } catch (err) {
+    console.error(err);
+    alert("Erreur lors de la sauvegarde des genres.");
+  }
+};
+
 
   // useEffect pour récupérer les détails des acteurs favoris
   useEffect(() => {
@@ -75,7 +141,47 @@ const Profile = ({ token, user }) => {
       {/* 🎯 Préférences */}
       <div style={{ marginTop: "20px", background: "#2a2a2a", padding: "15px", borderRadius: "10px",color:"white" }}>
         <h3>🎯 Préférences</h3>
-        <p><strong>Genres favoris :</strong> {user.preferences?.genres?.join(", ") || "Aucun"}</p>
+        {/* 🎨 Genres préférés modifiables */}
+        <div style={{ marginTop: "30px", background: "#2a2a2a", padding: "20px", borderRadius: "14px" }}>
+          <h3>🎨 Genres préférés</h3>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "10px" }}>
+            {TMDB_GENRES.map((genre) => (
+              <div
+                key={genre.id}
+                onClick={() => toggleGenre(genre.id)}
+                style={{
+                  padding: "8px 12px",
+                  borderRadius: "20px",
+                  backgroundColor: selectedGenres.includes(genre.id) ? "#f5b50a" : "#444",
+                  color: selectedGenres.includes(genre) ? "#000" : "#fff",
+                  cursor: "pointer",
+                  fontWeight: "500",
+                  transition: "0.2s",
+                  userSelect: "none"
+                }}
+              >
+                {genre.name}
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={saveGenres}
+            style={{
+              marginTop: "15px",
+              padding: "10px 20px",
+              borderRadius: "8px",
+              border: "none",
+              backgroundColor: "#4caf50",
+              color: "#fff",
+              cursor: "pointer",
+              fontWeight: "600"
+            }}
+          >
+            💾 Sauvegarder
+          </button>
+        </div>
+
+      
 
         {/* Section Acteurs Favoris */}
         <h4 style={{ marginTop: "20px", marginBottom: "15px",color:"white" }}>Acteurs favoris</h4>

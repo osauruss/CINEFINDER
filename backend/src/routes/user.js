@@ -17,6 +17,32 @@ router.get("/me", authMiddleware, async (req, res) => {
   }
 });
 
+// POST /api/user/preferences/genres
+router.post("/preferences/genres", authMiddleware, async (req, res) => {
+  try {
+    // authMiddleware définit req.userId
+    const userId = req.userId;
+    const { genres } = req.body; // ici ce sont les IDs TMDB
+
+    if (!Array.isArray(genres)) {
+      return res.status(400).json({ error: "Le champ 'genres' doit être un tableau d'IDs" });
+    }
+
+    // Mettre à jour l'utilisateur
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { "preferences.genres": genres },
+      { new: true }
+    );
+
+    res.json({ message: "Genres mis à jour", genres: user.preferences.genres });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Erreur serveur" });
+  }
+});
+
+
 //  Ajouter un acteur aux préférences
 router.post("/preferences/actors/:actorId", authMiddleware, async (req, res) => {
   try {
