@@ -42,7 +42,7 @@ export default function Movies() {
     }
   };
 
-  // ⭐⭐⭐ TON CIRCULAR RATING (inchangé)
+  // ⭐⭐⭐ TON CIRCULAR RATING avec note en blanc
   const CircularRating = ({ value }) => {
     const radius = 24;
     const circumference = 2 * Math.PI * radius;
@@ -97,7 +97,7 @@ export default function Movies() {
             transform: "translate(-50%, -50%)",
             fontSize: "14px",
             fontWeight: "600",
-            color: "#222",
+            color: "#fff", // Changé en blanc
           }}
         >
           {value.toFixed(1)}
@@ -107,11 +107,18 @@ export default function Movies() {
   };
 
   return (
-    <div style={{ padding: "20px" }}>
-      <h2>{query ? `Résultats pour : ${query}` : "🎬 Films populaires"}</h2>
+    <div style={{ 
+      padding: "20px",
+      backgroundColor: "#1a1a1a",
+      minHeight: "100vh"
+    }}>
+      {/* Titre en blanc */}
+      <h2 style={{ color: "#fff" }}>
+        {query ? `Résultats pour : ${query}` : "🎬 Films populaires"}
+      </h2>
 
       {loading ? (
-        <p>Chargement...</p>
+        <p style={{ color: "#fff" }}>Chargement...</p>
       ) : (
         <div
           style={{
@@ -125,16 +132,16 @@ export default function Movies() {
               key={movie.id}
               style={{
                 width: "200px",
-                border: "1px solid #ddd",
+                border: "1px solid #333",
                 borderRadius: "10px",
                 padding: "10px",
                 textAlign: "center",
-                backgroundColor: "#f9f9f9",
+                backgroundColor: "#2a2a2a",
               }}
             >
               <Link
                 to={`/movie/${movie.id}`}
-                style={{ textDecoration: "none", color: "black" }}
+                style={{ textDecoration: "none", color: "white" }}
               >
                 <img
                   src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`}
@@ -142,7 +149,7 @@ export default function Movies() {
                   style={{ borderRadius: "10px", width: "100%" }}
                 />
 
-                <h3 style={{ fontSize: "16px", marginTop: "10px" }}>
+                <h3 style={{ fontSize: "16px", marginTop: "10px", color: "#fff" }}>
                   {movie.title}
                 </h3>
 
