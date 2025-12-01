@@ -85,7 +85,7 @@ export default function Movies({ user }) {
     return (
       <div style={{ position: "relative", width: "60px", height: "60px" }}>
         <svg width="60" height="60" style={{ transform: "rotate(-90deg)" }}>
-          <circle cx="30" cy="30" r={radius} stroke="#e0e0e0" strokeWidth="5" fill="transparent" />
+          <circle cx="30" cy="30" r={radius} stroke="#2a2a2a" strokeWidth="5" fill="transparent" />
           <circle
             cx="30" cy="30" r={radius} stroke={`url(#grad-${value})`} strokeWidth="5" fill="transparent"
             strokeLinecap="round" strokeDasharray={circumference} strokeDashoffset={offset}
@@ -98,7 +98,7 @@ export default function Movies({ user }) {
             </linearGradient>
           </defs>
         </svg>
-        <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", fontSize: "14px", fontWeight: "600", color: "#222" }}>
+        <span style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", fontSize: "14px", fontWeight: "600", color: "white" }}>
           {value ? value.toFixed(1) : "0.0"}
         </span>
       </div>
@@ -111,11 +111,11 @@ export default function Movies({ user }) {
       style={{
         width: "200px",
         minWidth: "200px", // Important pour le scroll horizontal
-        border: "1px solid #ddd",
+        border: "1px solid #2a2a2a",
         borderRadius: "10px",
         padding: "10px",
         textAlign: "center",
-        backgroundColor: "#fff",
+        backgroundColor: "#2a2a2a",
         boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
         ...style
       }}
@@ -130,10 +130,10 @@ export default function Movies({ user }) {
           alt={movie.title}
           style={{ borderRadius: "10px", width: "100%", height: "300px", objectFit: "cover" }}
         />
-        <h3 style={{ fontSize: "16px", marginTop: "10px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+        <h3 style={{ fontSize: "16px", marginTop: "10px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" ,color:"white"}}>
           {movie.title}
         </h3>
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "10px" }}>
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "10px",color:"white" }}>
            {/* Certains objets (comme la watchlist) n'ont pas forcément vote_average, on gère le cas */}
            {movie.vote_average !== undefined && <CircularRating value={movie.vote_average} />}
         </div>
