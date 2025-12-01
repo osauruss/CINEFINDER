@@ -187,7 +187,7 @@ const Profile = ({ token, user }) => {
         <h4 style={{ marginTop: "20px", marginBottom: "15px",color:"white" }}>Acteurs favoris</h4>
         
         {favActors.length > 0 ? (
-          <div
+          <div  className="scroll-bar-custom"
             style={{
               display: "flex",
               overflowX: "auto", // Permet le scroll horizontal comme pour les films
@@ -205,7 +205,7 @@ const Profile = ({ token, user }) => {
                   minWidth: "140px",
                   textAlign: "center",
                   backgroundColor: "#1a1a1a",
-                  color:"white",
+                  
                   borderRadius: "12px",
                   boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
                   padding: "10px",
@@ -270,7 +270,7 @@ const Profile = ({ token, user }) => {
         
         <div style={{ background: "#2a2a2a", padding: "20px", borderRadius: "14px", boxShadow: "0 4px 12px rgba(0,0,0,0.06)" }}>
           {sortedLikedMovies.length > 0 ? (
-            <div
+            <div  className="scroll-bar-custom"
               style={{
                 display: "flex",
                 overflowX: "auto",
@@ -374,7 +374,7 @@ const Profile = ({ token, user }) => {
     }}
   >
     {user.watchlist && user.watchlist.length > 0 ? (
-      <div
+      <div  className="scroll-bar-custom"
         style={{
           display: "flex",
           overflowX: "auto",
