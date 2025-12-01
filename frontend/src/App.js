@@ -11,6 +11,8 @@ import MovieDetails from "./pages/MovieDetails";
 import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
 import ActorDetails from "./pages/ActorDetails";
+import './App.css';
+
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem("token") || "");

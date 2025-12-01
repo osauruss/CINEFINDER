@@ -105,7 +105,7 @@ const ActorDetails = ({ token, user, setUser }) => {
         margin: "40px auto",
         padding: "20px",
         fontFamily: "Inter, sans-serif",
-        color: "#222",
+        color: "#fff",
         lineHeight: "1.6",
       }}
     >
@@ -115,7 +115,7 @@ const ActorDetails = ({ token, user, setUser }) => {
           display: "flex",
           flexWrap: "wrap",
           gap: "30px",
-          background: "#fff",
+          background: "#2a2a2a",
           borderRadius: "16px",
           boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
           padding: "30px",
@@ -179,19 +179,19 @@ const ActorDetails = ({ token, user, setUser }) => {
           </h1>
 
           {actor.birthday && (
-            <p style={{ color: "#666", fontSize: "0.95rem" }}>
+            <p style={{ color: "#fff", fontSize: "0.95rem" }}>
               🎂 <strong>Date de naissance :</strong> {actor.birthday}
             </p>
           )}
 
           {actor.place_of_birth && (
-            <p style={{ color: "#666", fontSize: "0.95rem" }}>
+            <p style={{ color: "#fff", fontSize: "0.95rem" }}>
               📍 <strong>Lieu de naissance :</strong> {actor.place_of_birth}
             </p>
           )}
 
           {actor.deathday && (
-            <p style={{ color: "#666", fontSize: "0.95rem" }}>
+            <p style={{ color: "fff", fontSize: "0.95rem" }}>
               🕊️ <strong>Date de décès :</strong> {actor.deathday}
             </p>
           )}
@@ -200,7 +200,7 @@ const ActorDetails = ({ token, user, setUser }) => {
             <p
               style={{
                 marginTop: "20px",
-                color: "#333",
+                color: "#fff",
                 fontSize: "1rem",
                 textAlign: "justify",
               }}
@@ -226,9 +226,12 @@ const ActorDetails = ({ token, user, setUser }) => {
       </h2>
 
       <div
+
+      className="scroll-bar-custom"
         style={{
+          
           display: "flex",
-          overflowX: "auto",
+          overflowX: "auto",  
           gap: "20px",
           padding: "15px 0",
         }}
@@ -242,7 +245,7 @@ const ActorDetails = ({ token, user, setUser }) => {
               color: "inherit",
               minWidth: "140px",
               textAlign: "center",
-              backgroundColor: "#ffffff",
+              backgroundColor: "#2A2A2A",
               borderRadius: "12px",
               boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
               padding: "10px",
@@ -274,7 +277,7 @@ const ActorDetails = ({ token, user, setUser }) => {
               style={{
                 fontWeight: "bold",
                 fontSize: "14px",
-                color: "#222",
+                color: "#fff",
                 marginBottom: "2px",
               }}
             >
@@ -284,7 +287,7 @@ const ActorDetails = ({ token, user, setUser }) => {
               <p
                 style={{
                   fontSize: "13px",
-                  color: "#777",
+                  color: "#fff",
                   fontStyle: "italic",
                 }}
               >

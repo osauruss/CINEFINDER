@@ -506,7 +506,7 @@ const handleLikeToggle = async () => {
         Distribution principale
       </h2>
 
-      <div
+      <div  className="scroll-bar-custom"
         style={{
           display: "flex",
           overflowX: "auto",
