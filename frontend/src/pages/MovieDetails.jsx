@@ -224,7 +224,7 @@ const handleLikeToggle = async () => {
           display: "flex",
           flexWrap: "wrap",
           gap: "30px",
-          background: "#181818",
+          background: "#282828",
           borderRadius: "16px",
           boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
           padding: "30px",
@@ -391,7 +391,7 @@ const handleLikeToggle = async () => {
                           padding: "10px",
                           borderRadius: "12px",
                           boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
-                          transition: "transform 0.2s, box-shadow 0.2s",
+                          transition: "transform 0.2s, box-shadow 0.2s",color:"white"
                         }}
                       >
                         <img
@@ -401,10 +401,10 @@ const handleLikeToggle = async () => {
                             width: "60px",
                             height: "60px",
                             objectFit: "contain",
-                            marginBottom: "8px",
+                            marginBottom: "8px",color:"white"
                           }}
                         />
-                        <p style={{ fontSize: "0.85rem", fontWeight: "600", color: "#333" }}>
+                        <p style={{ fontSize: "0.85rem", fontWeight: "600", color: "white" }}>
                           {p.provider_name}
                         </p>
                       </div>
