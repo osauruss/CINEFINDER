@@ -14,12 +14,26 @@ const Profile = ({ token, user }) => {
 
     // Pour gérer les genres sélectionnés
   useEffect(() => {
-  if (user?.preferences?.genres) {
-    const genreIds = TMDB_GENRES
-      .filter(g => user.preferences.genres.includes(g.name))
-      .map(g => g.id);
-    setSelectedGenres(genreIds);
-  }
+    // Normalize stored preferences to TMDB genre IDs.
+    // The backend may store either TMDB IDs (numbers/strings) or genre names.
+    if (user?.preferences?.genres && Array.isArray(user.preferences.genres)) {
+      const ids = user.preferences.genres
+        .map((g) => {
+          // already a number
+          if (typeof g === "number") return g;
+          // numeric string
+          const n = Number(g);
+          if (!Number.isNaN(n)) return n;
+          // try to match by name (case-insensitive)
+          const found = TMDB_GENRES.find((tg) => tg.name.toLowerCase() === String(g).toLowerCase());
+          return found ? found.id : null;
+        })
+        .filter((v) => v !== null && v !== undefined);
+
+      setSelectedGenres(ids);
+    } else {
+      setSelectedGenres([]);
+    }
   }, [user]);
 
 
@@ -48,13 +62,30 @@ const Profile = ({ token, user }) => {
 ];
 
 
-  const toggleGenre = (id) => {
+  const toggleGenre = async (id) => {
+  let updatedGenres;
+  
   if (selectedGenres.includes(id)) {
-    setSelectedGenres(selectedGenres.filter(g => g !== id));
+    updatedGenres = selectedGenres.filter(g => g !== id);
   } else {
-    setSelectedGenres([...selectedGenres, id]);
+    updatedGenres = [...selectedGenres, id];
+  }
+
+  setSelectedGenres(updatedGenres);
+
+  try {
+    await axios.post(
+      "http://localhost:5000/api/user/preferences/genres",
+      { genres: updatedGenres },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    // Pas besoin d'alert ici, sinon ça pop à chaque clic
+    console.log("Genres sauvegardés :", updatedGenres);
+  } catch (err) {
+    console.error("Erreur lors de la sauvegarde automatique des genres :", err);
   }
 };
+
 
 
 
@@ -153,7 +184,7 @@ const Profile = ({ token, user }) => {
                   padding: "8px 12px",
                   borderRadius: "20px",
                   backgroundColor: selectedGenres.includes(genre.id) ? "#f5b50a" : "#444",
-                  color: selectedGenres.includes(genre) ? "#000" : "#fff",
+                  color: selectedGenres.includes(genre.id) ? "#000" : "#fff",
                   cursor: "pointer",
                   fontWeight: "500",
                   transition: "0.2s",
