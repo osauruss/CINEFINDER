@@ -173,7 +173,11 @@ export default function Movies({ user }) {
           )}
 
           <section>
+<<<<<<< HEAD
              <h2 style={{ marginBottom: "20px", color: "#fff" }}>🎬 Films Populaires</h2>
+=======
+             <h2 style={{ borderBottom: "3px solid #f5b50a", display: "inline-block", marginBottom: "20px" ,color: "#ffffffff"}}> Films Populaires</h2>
+>>>>>>> 9bde0388f7caf99f4c295cc1ba7aab76cb8f6f09
              {loading ? <p>Chargement...</p> : (
                <div style={gridContainerStyle}>
                  {movies.map((m) => <MovieCard key={m.id} movie={m} />)}
