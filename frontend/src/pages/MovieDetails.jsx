@@ -213,8 +213,9 @@ const handleLikeToggle = async () => {
         margin: "40px auto",
         padding: "20px",
         fontFamily: "Inter, sans-serif",
-        color: "#222",
+        color: "white",
         lineHeight: 1.6,
+        minHeight: "100vh"
       }}
     >
       {/* ░░░░░░░░░░ Informations du film ░░░░░░░░░░ */}
@@ -223,7 +224,7 @@ const handleLikeToggle = async () => {
           display: "flex",
           flexWrap: "wrap",
           gap: "30px",
-          background: "#fff",
+          background: "#181818",
           borderRadius: "16px",
           boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
           padding: "30px",
@@ -250,7 +251,7 @@ const handleLikeToggle = async () => {
             {movie.title}
           </h1>
 
-          <p style={{ color: "#666" }}>
+          <p style={{ color: "white" }}>
             <strong>Date de sortie :</strong> {movie.release_date}
           </p>
 
@@ -314,7 +315,7 @@ const handleLikeToggle = async () => {
           <div
             style={{
               marginTop: "20px",
-              background: "#f8f8f8",
+              background: "#181818",
               borderRadius: "10px",
               padding: "15px",
             }}
@@ -333,7 +334,7 @@ const handleLikeToggle = async () => {
               fontSize: "1.8rem",
               borderBottom: "3px solid #f5b50a",
               display: "inline-block",
-              marginBottom: "15px",
+              marginBottom: "15px", color:"white"
             }}
           >
             Bande-annonce
@@ -347,7 +348,7 @@ const handleLikeToggle = async () => {
             style={{
               borderRadius: "12px",
               boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-              border: "none",
+              border: "none",color:"white"
             }}
             allowFullScreen
           ></iframe>
@@ -369,7 +370,7 @@ const handleLikeToggle = async () => {
                 marginBottom: "25px",
                 borderBottom: "3px solid #f5b50a",
                 display: "inline-block",
-                paddingBottom: "5px",
+                paddingBottom: "5px",color:"white"
               }}
             >
               Où regarder ?
@@ -379,7 +380,7 @@ const handleLikeToggle = async () => {
               {/* STREAMING */}
               {providers.flatrate?.length > 0 && (
                 <div>
-                  <h3 style={{ marginBottom: "12px" }}>Streaming</h3>
+                  <h3 style={{ marginBottom: "12px",color:"white" }}>Streaming</h3>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
                     {providers.flatrate.map((p) => (
                       <div
@@ -387,7 +388,7 @@ const handleLikeToggle = async () => {
                         style={{
                           width: "100px",
                           textAlign: "center",
-                          background: "#fff",
+                          background: "#2a2a2a",
                           padding: "10px",
                           borderRadius: "12px",
                           boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
@@ -424,7 +425,7 @@ const handleLikeToggle = async () => {
                         style={{
                           width: "100px",
                           textAlign: "center",
-                          background: "#fff",
+                          background: "#2a2a2a",
                           padding: "10px",
                           borderRadius: "12px",
                           boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
@@ -460,7 +461,7 @@ const handleLikeToggle = async () => {
                         style={{
                           width: "100px",
                           textAlign: "center",
-                          background: "#fff",
+                          background: "#2a2a2a",
                           padding: "10px",
                           borderRadius: "12px",
                           boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
@@ -523,7 +524,7 @@ const handleLikeToggle = async () => {
               textAlign: "center",
               textDecoration: "none",
               color: "inherit",
-              background: "#fff",
+              background: "#2a2a2a",
               padding: "10px",
               borderRadius: "12px",
               boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
