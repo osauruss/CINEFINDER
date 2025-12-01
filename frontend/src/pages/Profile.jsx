@@ -46,7 +46,7 @@ const Profile = ({ token, user }) => {
     const offset = circumference - (value / 10) * circumference;
 
     return (
-      <div style={{ position: "relative", width: "60px", height: "60px" }}>
+      <div style={{ position: "relative", width: "60px", height: "60px",color:"white" }}>
         <svg width="60" height="60">
           <circle cx="30" cy="30" r={radius} stroke="#e0e0e0" strokeWidth="5" fill="transparent" />
           <circle
@@ -68,17 +68,17 @@ const Profile = ({ token, user }) => {
   };
 
   return (
-    <div style={{ padding: "30px", maxWidth: "1100px", margin: "0 auto", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ padding: "30px", maxWidth: "1100px", margin: "0 auto", fontFamily: "Inter, sans-serif",color:"white" }}>
       <h2 style={{ textAlign: "center" }}>👤 Profil de {user.username}</h2>
       <p><strong>Email :</strong> {user.email}</p>
       
       {/* 🎯 Préférences */}
-      <div style={{ marginTop: "20px", background: "#f8f8f8", padding: "15px", borderRadius: "10px" }}>
+      <div style={{ marginTop: "20px", background: "#2a2a2a", padding: "15px", borderRadius: "10px",color:"white" }}>
         <h3>🎯 Préférences</h3>
         <p><strong>Genres favoris :</strong> {user.preferences?.genres?.join(", ") || "Aucun"}</p>
 
         {/* Section Acteurs Favoris */}
-        <h4 style={{ marginTop: "20px", marginBottom: "15px" }}>Acteurs favoris</h4>
+        <h4 style={{ marginTop: "20px", marginBottom: "15px",color:"white" }}>Acteurs favoris</h4>
         
         {favActors.length > 0 ? (
           <div
@@ -98,7 +98,8 @@ const Profile = ({ token, user }) => {
                   color: "inherit",
                   minWidth: "140px",
                   textAlign: "center",
-                  backgroundColor: "#ffffff",
+                  backgroundColor: "#1a1a1a",
+                  color:"white",
                   borderRadius: "12px",
                   boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
                   padding: "10px",
@@ -133,7 +134,7 @@ const Profile = ({ token, user }) => {
                   style={{
                     fontWeight: "bold",
                     fontSize: "14px",
-                    color: "#222",
+                    color: "white",
                     marginBottom: "2px",
                   }}
                 >
@@ -161,7 +162,7 @@ const Profile = ({ token, user }) => {
           ⭐ Films aimés
         </h2>
         
-        <div style={{ background: "#f4f4f4", padding: "20px", borderRadius: "14px", boxShadow: "0 4px 12px rgba(0,0,0,0.06)" }}>
+        <div style={{ background: "#2a2a2a", padding: "20px", borderRadius: "14px", boxShadow: "0 4px 12px rgba(0,0,0,0.06)" }}>
           {sortedLikedMovies.length > 0 ? (
             <div
               style={{
@@ -178,7 +179,7 @@ const Profile = ({ token, user }) => {
                 style={{
                   minWidth: "200px",
                   maxWidth: "200px",
-                  background: "#fff",
+                  background: "#181818",
                   borderRadius: "12px",
                   boxShadow: "0 4px 12px rgba(0,0,0,0.10)",
                   padding: "12px",
@@ -260,7 +261,7 @@ const Profile = ({ token, user }) => {
 
   <div
     style={{
-      background: "#f4f4f4",
+      background: "#2a2a2a",
       padding: "20px",
       borderRadius: "14px",
       boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
@@ -282,7 +283,7 @@ const Profile = ({ token, user }) => {
             style={{
               minWidth: "200px",
               maxWidth: "200px",
-              background: "#fff",
+              background: "#1a1a1a",
               borderRadius: "12px",
               boxShadow: "0 4px 12px rgba(0,0,0,0.10)",
               padding: "10px",
