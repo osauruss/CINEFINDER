@@ -427,7 +427,7 @@ const handleLikeToggle = async () => {
                           background: "#2a2a2a",
                           padding: "10px",
                           borderRadius: "12px",
-                          boxShadow: "0 3px 10px rgba(0,0,0,0.1)",
+                          boxShadow: "0 3px 10px rgba(0,0,0,0.1)"
                         }}
                       >
                         <img
@@ -440,7 +440,7 @@ const handleLikeToggle = async () => {
                             marginBottom: "8px",
                           }}
                         />
-                        <p style={{ fontSize: "0.85rem", fontWeight: "600", color: "#333" }}>
+                        <p style={{ fontSize: "0.85rem", fontWeight: "600", color: "#fff" }}>
                           {p.provider_name}
                         </p>
                       </div>
@@ -476,7 +476,7 @@ const handleLikeToggle = async () => {
                             marginBottom: "8px",
                           }}
                         />
-                        <p style={{ fontSize: "0.85rem", fontWeight: "600", color: "#333" }}>
+                        <p style={{ fontSize: "0.85rem", fontWeight: "600",color: "#fff" }}>
                           {p.provider_name}
                         </p>
                       </div>
