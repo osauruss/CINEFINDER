@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
@@ -146,112 +147,223 @@ const Profile = ({ token, user }) => {
         )}
       </div>
 
-     {/* ⭐ Films aimés */}
-<div style={{ marginTop: "40px" }}>
-  <h3 style={{ marginBottom: "15px" }}>⭐ Films aimés</h3>
-
-  {sortedLikedMovies.length > 0 ? (
-    <div
-      style={{
-        display: "flex",
-        overflowX: "auto",
-        gap: "20px",
-        paddingBottom: "15px",
-      }}
-    >
-      {sortedLikedMovies.map((movie) => (
-        <div
-          key={movie.tmdbId}
+      {/* ⭐ Films aimés */}
+      <div style={{ marginTop: "50px" }}>
+        <h2
           style={{
-            minWidth: "180px",
-            background: "#fff",
-            borderRadius: "12px",
-            boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-            padding: "10px",
-            textAlign: "center",
-            flexShrink: 0,
-            transition: "transform 0.2s ease, box-shadow 0.2s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translateY(-5px)";
-            e.currentTarget.style.boxShadow = "0 6px 14px rgba(0,0,0,0.15)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
+            fontSize: "1.8rem",
+            borderBottom: "3px solid #f5b50a",
+            display: "inline-block",
+            paddingBottom: "5px",
+            marginBottom: "20px",
           }}
         >
-          <Link
-            to={`/movie/${movie.tmdbId}`}
-            style={{ textDecoration: "none", color: "inherit" }}
-          >
-            <img
-              src={`https://image.tmdb.org/t/p/w200${movie.poster || ""}`}
-              alt={movie.title}
-              style={{ borderRadius: "10px", width: "100%" }}
-            />
-
-            <h4 style={{ marginTop: "8px", fontSize: "15px" }}>
-              {movie.title}
-            </h4>
-
-            {/* tu peux enlever rating si tu veux */}
-            <div style={{ display: "flex", justifyContent: "center", marginTop: "6px" }}>
-              <CircularRating value={movie.rating || 70} />
-            </div>
-          </Link>
-        </div>
-      ))}
-    </div>
-  ) : (
-    <p>Aucun film aimé.</p>
-  )}
-</div>
-
-      {/* 🎬 Watchlist */}
-      <div style={{ marginTop: "40px" }}>
-        <h3 style={{ marginBottom: "15px" }}>🎬 Watchlist</h3>
-        {user.watchlist?.length > 0 ? (
-          <div style={{ display: "flex", overflowX: "auto", gap: "20px", paddingBottom: "15px" }}>
-            {user.watchlist.map((movie) => (
-              <div
+          ⭐ Films aimés
+        </h2>
+        
+        <div style={{ background: "#f4f4f4", padding: "20px", borderRadius: "14px", boxShadow: "0 4px 12px rgba(0,0,0,0.06)" }}>
+          {sortedLikedMovies.length > 0 ? (
+            <div
+              style={{
+                display: "flex",
+                overflowX: "auto",
+                gap: "22px",
+                padding: "15px 0",
+              }}
+            >
+            {sortedLikedMovies.map((movie) => (
+              <Link
                 key={movie.tmdbId}
+                to={`/movie/${movie.tmdbId}`}
                 style={{
-                  minWidth: "180px",
+                  minWidth: "200px",
+                  maxWidth: "200px",
                   background: "#fff",
                   borderRadius: "12px",
-                  boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                  padding: "10px",
+                  boxShadow: "0 4px 12px rgba(0,0,0,0.10)",
+                  padding: "12px",
                   textAlign: "center",
-                  flexShrink: 0,
+                  color: "inherit",
+                  textDecoration: "none",
                   transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                  flexShrink: 0,
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = "translateY(-5px)";
-                  e.currentTarget.style.boxShadow = "0 6px 14px rgba(0,0,0,0.15)";
+                  e.currentTarget.style.transform = "translateY(-6px)";
+                  e.currentTarget.style.boxShadow = "0 6px 18px rgba(0,0,0,0.18)";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "translateY(0)";
-                  e.currentTarget.style.boxShadow = "0 4px 10px rgba(0,0,0,0.1)";
+                  e.currentTarget.style.boxShadow = "0 4px 12px rgba(0,0,0,0.10)";
                 }}
               >
-                <Link to={`/movie/${movie.tmdbId}`} style={{ textDecoration: "none", color: "inherit" }}>
-                  <img
-                    src={`https://image.tmdb.org/t/p/w200${movie.poster || ""}`}
-                    alt={movie.title}
-                    style={{ borderRadius: "10px", width: "100%" }}
-                  />
-                  <h4 style={{ marginTop: "8px", fontSize: "15px" }}>{movie.title}</h4>
-                </Link>
-              </div>
+                {/* Poster */}
+                <img
+                  src={
+                    movie.poster
+                      ? `https://image.tmdb.org/t/p/w200${movie.poster}`
+                      : "https://via.placeholder.com/150x225?text=No+Image"
+                  }
+                  alt={movie.title}
+                  style={{
+                    width: "100%",
+                    borderRadius: "10px",
+                    objectFit: "cover",
+                    marginBottom: "10px",
+                  }}
+                />
+      
+                {/* Titre */}
+                <h3
+                  style={{
+                    fontSize: "1rem",
+                    fontWeight: "bold",
+                    minHeight: "40px",
+                    lineHeight: "1.2",
+                  }}
+                >
+                  {movie.title}
+                </h3>
+                
+                {/* Note utilisateur (optionnel) */}
+                {movie.rating && (
+                  <div style={{ marginTop: "8px" }}>
+                    <CircularRating value={movie.rating} />
+                  </div>
+                )}
+              </Link>
             ))}
-          </div>
-        ) : (
-          <p>Aucun film dans la watchlist.</p>
-        )}
+            </div>
+          ) : (
+            <p style={{ color: "#777", fontStyle: "italic" }}>
+              Vous n’avez encore aimé aucun film.
+            </p>
+          )}
+        </div>
       </div>
+
+
+        {/* Watchlist */}
+      {/* 🎬 Watchlist */}
+<div style={{ marginTop: "50px" }}>
+  <h2
+    style={{
+      fontSize: "1.8rem",
+      borderBottom: "3px solid #f5b50a",
+      display: "inline-block",
+      paddingBottom: "5px",
+      marginBottom: "20px",
+    }}
+  >
+    🎬 Watchlist
+  </h2>
+
+  <div
+    style={{
+      background: "#f4f4f4",
+      padding: "20px",
+      borderRadius: "14px",
+      boxShadow: "0 4px 12px rgba(0,0,0,0.06)",
+    }}
+  >
+    {user.watchlist && user.watchlist.length > 0 ? (
+      <div
+        style={{
+          display: "flex",
+          overflowX: "auto",
+          gap: "16px",
+          padding: "10px 0",
+        }}
+      >
+        {user.watchlist.map((movie) => (
+          <Link
+            key={movie.tmdbId}
+            to={`/movie/${movie.tmdbId}`}
+            style={{
+              minWidth: "200px",
+              maxWidth: "200px",
+              background: "#fff",
+              borderRadius: "12px",
+              boxShadow: "0 4px 12px rgba(0,0,0,0.10)",
+              padding: "10px",
+              textAlign: "center",
+              color: "inherit",
+              textDecoration: "none",
+              flexShrink: 0,
+              transition: "transform 0.2s ease, box-shadow 0.2s ease",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-4px)";
+              e.currentTarget.style.boxShadow =
+                "0 6px 16px rgba(0,0,0,0.15)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.boxShadow =
+                "0 3px 8px rgba(0,0,0,0.10)";
+            }}
+          >
+            {/* Poster */}
+            <img
+              src={
+                movie.poster
+                  ? `https://image.tmdb.org/t/p/w200${movie.poster}`
+                  : "https://via.placeholder.com/150x225?text=No+Image"
+              }
+              alt={movie.title}
+              style={{
+                width: "100%",
+                borderRadius: "10px",
+                objectFit: "cover",
+                marginBottom: "10px",
+              }}
+            />
+
+            {/* Titre */}
+            <h3
+              style={{
+                fontSize: "1rem",
+                fontWeight: "bold",
+                minHeight: "40px",
+                lineHeight: "1.2",
+                margin: 0,
+              }}
+            >
+              {movie.title}
+            </h3>
+
+            {/* Ajouté le... */}
+            {movie.addedAt && (
+              <p
+                style={{
+                  marginTop: "4px",
+                  color: "#777",
+                  fontSize: "0.7rem",
+                  fontStyle: "italic",
+                }}
+              >
+                Ajouté le{" "}
+                {new Date(movie.addedAt).toLocaleDateString("fr-FR")}
+              </p>
+            )}
+          </Link>
+        ))}
+      </div>
+    ) : (
+      <p style={{ color: "#777", fontStyle: "italic" }}>
+        Aucun film dans votre watchlist.
+      </p>
+    )}
+  </div>
+</div>
+
     </div>
+  
   );
 };
+
+
+
+
 
 export default Profile;
