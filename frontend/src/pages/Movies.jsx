@@ -3,33 +3,26 @@ import { Link, useLocation } from "react-router-dom";
 import api from "../api";
 
 export default function Movies({ user }) {
-  const [movies, setMovies] = useState([]); // Films populaires (Grid)
-  const [recommendations, setRecommendations] = useState([]); // Recommandations (Scroll)
+  const [movies, setMovies] = useState([]);
+  const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const query = searchParams.get("query");
 
-  // ─────────────────────────────────────────────
-  // 1. LOGIQUE DE CHARGEMENT
-  // ─────────────────────────────────────────────
   useEffect(() => {
     if (query) {
-      // Mode Recherche
       searchMovies(query);
     } else {
-      // Mode Navigation
       fetchPopularMovies();
       
-      // Si l'utilisateur est connecté et a des genres favoris, on cherche des recos
       if (user && user.preferences?.genres?.length > 0) {
-        fetchRecommendations(user.preferences.genres[0]); // On prend le 1er genre favori
+        fetchRecommendations(user.preferences.genres[0]);
       }
     }
   }, [query, user]);
 
-  // Récupérer les films populaires
   const fetchPopularMovies = async () => {
     try {
       setLoading(true);
@@ -42,7 +35,6 @@ export default function Movies({ user }) {
     }
   };
 
-  // Rechercher un film
   const searchMovies = async (search) => {
     try {
       setLoading(true);
@@ -55,11 +47,8 @@ export default function Movies({ user }) {
     }
   };
 
-  // Récupérer les recommandations (par genre)
   const fetchRecommendations = async (genreId) => {
     try {
-      // Note: Assure-toi que tes préférences stockent les ID des genres (ex: 28 pour Action)
-      // Si tu stockes les noms ("Action"), il faudra faire une conversion.
       const response = await api.get(`/movies/discover?with_genres=${genreId}`);
       setRecommendations(response.data.results);
     } catch (err) {
@@ -67,10 +56,6 @@ export default function Movies({ user }) {
     }
   };
 
-  // ─────────────────────────────────────────────
-  // 2. COMPOSANTS UTILITAIRES (Internes)
-  // ─────────────────────────────────────────────
-  
   const CircularRating = ({ value }) => {
     const radius = 24;
     const circumference = 2 * Math.PI * radius;
@@ -105,12 +90,11 @@ export default function Movies({ user }) {
     );
   };
 
-  // Carte de film (réutilisable)
   const MovieCard = ({ movie, style = {} }) => (
     <div
       style={{
         width: "200px",
-        minWidth: "200px", // Important pour le scroll horizontal
+        minWidth: "200px",
         border: "1px solid #2a2a2a",
         borderRadius: "10px",
         padding: "10px",
@@ -130,33 +114,26 @@ export default function Movies({ user }) {
           alt={movie.title}
           style={{ borderRadius: "10px", width: "100%", height: "300px", objectFit: "cover" }}
         />
-        <h3 style={{ fontSize: "16px", marginTop: "10px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" ,color:"white"}}>
+        <h3 style={{ fontSize: "16px", marginTop: "10px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color:"white" }}>
           {movie.title}
         </h3>
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "10px",color:"white" }}>
-           {/* Certains objets (comme la watchlist) n'ont pas forcément vote_average, on gère le cas */}
+        <div style={{ display: "flex", justifyContent: "center", marginTop: "10px", color:"white" }}>
            {movie.vote_average !== undefined && <CircularRating value={movie.vote_average} />}
         </div>
       </Link>
     </div>
   );
 
-  // ─────────────────────────────────────────────
-  // 3. RENDU
-  // ─────────────────────────────────────────────
-
-  // Style pour le défilement horizontal (scroll)
+  // ✅ CORRECTION : Retirer scrollbarWidth
   const scrollContainerStyle = {
     display: "flex",
     overflowX: "auto",
     gap: "20px",
     paddingBottom: "20px",
     marginBottom: "40px",
-    // Cache la scrollbar mais garde le scroll
-    scrollbarWidth: "thin",
+    // scrollbarWidth retiré pour laisser le CSS personnalisé s'appliquer
   };
 
-  // Style pour la grille (films populaires)
   const gridContainerStyle = {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
@@ -164,9 +141,15 @@ export default function Movies({ user }) {
   };
 
   return (
-    <div style={{ padding: "30px", maxWidth: "1200px", margin: "0 auto", fontFamily: "Inter, sans-serif" }}>
+    <div style={{ 
+      padding: "30px", 
+      maxWidth: "1200px", 
+      margin: "0 auto", 
+      fontFamily: "Inter, sans-serif", 
+      color:"white",
+      minHeight: "100vh" 
+    }}>
       
-      {/* 🟢 CAS 1 : RECHERCHE ACTIVE */}
       {query ? (
         <>
            <h2>🔍 Résultats pour : "{query}"</h2>
@@ -177,23 +160,20 @@ export default function Movies({ user }) {
            )}
         </>
       ) : (
-        // 🟢 CAS 2 : AFFICHAGE NORMAL (Pas de recherche)
         <>
-          {/* 1. WATCHLIST (Si connecté) */}
           {user && user.watchlist && user.watchlist.length > 0 && (
              <section>
-               <h2 style={{ borderBottom: "3px solid #f5b50a", display: "inline-block", marginBottom: "20px" ,color: "#ffffffff"}}>
-                  Ma Watchlist
+               <h2 style={{ borderBottom: "3px solid #f5b50a", display: "inline-block", marginBottom: "20px", color: "#fff" }}>
+                  📋 Ma Watchlist
                </h2>
-               <div style={scrollContainerStyle}>
+               <div className="scroll-bar-custom" style={scrollContainerStyle}>
                  {user.watchlist.map((m) => <MovieCard key={m.tmdbId} movie={m} />)}
                </div>
              </section>
           )}
 
-          {/* 2. FILMS POPULAIRES (Grille, toujours affiché) */}
           <section>
-             <h2 style={{ marginBottom: "20px" ,color: "#ffffffff"}}> Films Populaires</h2>
+             <h2 style={{ borderBottom: "3px solid #f5b50a", display: "inline-block", marginBottom: "20px" ,color: "#ffffffff"}}> Films Populaires</h2>
              {loading ? <p>Chargement...</p> : (
                <div style={gridContainerStyle}>
                  {movies.map((m) => <MovieCard key={m.id} movie={m} />)}
@@ -201,13 +181,12 @@ export default function Movies({ user }) {
              )}
           </section>
 
-          {/* 3. RECOMMANDATIONS (Si connecté et préférences trouvées) */}
           {user && recommendations.length > 0 && (
              <section style={{ marginTop: "50px" }}>
-               <h2 style={{ borderBottom: "3px solid #00c853", display: "inline-block", marginBottom: "20px" }}>
-                  Recommandés pour vous
+               <h2 style={{ borderBottom: "3px solid #00c853", display: "inline-block", marginBottom: "20px", color: "#fff" }}>
+                  ✨ Recommandés pour vous
                </h2>
-               <div style={scrollContainerStyle}>
+              <div className="scroll-bar-custom" style={scrollContainerStyle}>
                  {recommendations.map((m) => <MovieCard key={m.id} movie={m} />)}
                </div>
              </section>
