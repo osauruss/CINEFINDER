@@ -5,7 +5,7 @@ git status
 
 git pull pour recup le reste 
 
-👉 Montre les fichiers modifiés, ajoutés ou non suivis.
+Montre les fichiers modifiés, ajoutés ou non suivis.
 
 Ajouter un fichier à suivre
 git add nom_du_fichier.txt

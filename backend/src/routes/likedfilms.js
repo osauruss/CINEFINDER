@@ -3,10 +3,10 @@ const router = express.Router();
 const User = require("../models/User");
 const authMiddleware = require("../middleware/authMiddleware"); // Vérifie que le chemin est bon
 
-// ⭐ AJOUTER OU NOTER un film (Rating 1-5)
+// Aajouter ou noter un film 
 router.post("/add", authMiddleware, async (req, res) => {
   try {
-    // On récupère aussi la note (rating)
+    // On récupère aussi la note 
     const { tmdbId, title, poster, rating } = req.body;
 
     const user = await User.findById(req.userId);
@@ -18,16 +18,16 @@ router.post("/add", authMiddleware, async (req, res) => {
     );
 
     if (existingIndex !== -1) {
-      // 🔄 CAS 1 : Le film existe déjà -> On MET À JOUR la note
+      // CAS 1 : Le film existe déjà -> On MET À JOUR la note
       user.likedMovies[existingIndex].rating = rating;
-      // Optionnel : on met à jour le titre/poster si ça a changé
+      // on met à jour le titre/poster si ça a changé
       user.likedMovies[existingIndex].title = title;
       user.likedMovies[existingIndex].poster = poster;
       
       await user.save();
-      return res.json({ message: "Note mise à jour ⭐", likedMovies: user.likedMovies });
+      return res.json({ message: "Note mise à jour", likedMovies: user.likedMovies });
     } else {
-      // ➕ CAS 2 : Le film n'existe pas -> On l'AJOUTE avec la note
+      // CAS 2 : Le film n'existe pas -> On l'ajoute avec la note
       user.likedMovies.push({ 
         tmdbId, 
         title, 
@@ -37,7 +37,7 @@ router.post("/add", authMiddleware, async (req, res) => {
       });
       
       await user.save();
-      return res.json({ message: "Film noté et ajouté 👍", likedMovies: user.likedMovies });
+      return res.json({ message: "Film noté et ajouté ", likedMovies: user.likedMovies });
     }
 
   } catch (err) {
@@ -46,20 +46,20 @@ router.post("/add", authMiddleware, async (req, res) => {
   }
 });
 
-// ❌ RETIRER un film liké (et sa note)
+// Retirer un film liké 
 router.delete("/remove/:tmdbId", authMiddleware, async (req, res) => {
   try {
     const user = await User.findById(req.userId);
     if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
 
-    // On filtre pour tout garder SAUF le film ciblé
+    // On filtre pour tout garder sauf le film ciblé
     user.likedMovies = user.likedMovies.filter(
       (m) => String(m.tmdbId) !== String(req.params.tmdbId)
     );
 
     await user.save();
 
-    res.json({ message: "Film et note retirés ❌", likedMovies: user.likedMovies });
+    res.json({ message: "Film et note retirés", likedMovies: user.likedMovies });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "Erreur serveur" });
