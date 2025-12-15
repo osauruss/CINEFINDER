@@ -14,12 +14,26 @@ const Profile = ({ token, user }) => {
 
     // Pour gérer les genres sélectionnés
   useEffect(() => {
-  if (user?.preferences?.genres) {
-    const genreIds = TMDB_GENRES
-      .filter(g => user.preferences.genres.includes(g.name))
-      .map(g => g.id);
-    setSelectedGenres(genreIds);
-  }
+    // Normalize stored preferences to TMDB genre IDs.
+    // The backend may store either TMDB IDs (numbers/strings) or genre names.
+    if (user?.preferences?.genres && Array.isArray(user.preferences.genres)) {
+      const ids = user.preferences.genres
+        .map((g) => {
+          // already a number
+          if (typeof g === "number") return g;
+          // numeric string
+          const n = Number(g);
+          if (!Number.isNaN(n)) return n;
+          // try to match by name (case-insensitive)
+          const found = TMDB_GENRES.find((tg) => tg.name.toLowerCase() === String(g).toLowerCase());
+          return found ? found.id : null;
+        })
+        .filter((v) => v !== null && v !== undefined);
+
+      setSelectedGenres(ids);
+    } else {
+      setSelectedGenres([]);
+    }
   }, [user]);
 
 
@@ -48,13 +62,30 @@ const Profile = ({ token, user }) => {
 ];
 
 
-  const toggleGenre = (id) => {
+  const toggleGenre = async (id) => {
+  let updatedGenres;
+  
   if (selectedGenres.includes(id)) {
-    setSelectedGenres(selectedGenres.filter(g => g !== id));
+    updatedGenres = selectedGenres.filter(g => g !== id);
   } else {
-    setSelectedGenres([...selectedGenres, id]);
+    updatedGenres = [...selectedGenres, id];
+  }
+
+  setSelectedGenres(updatedGenres);
+
+  try {
+    await axios.post(
+      "http://localhost:5000/api/user/preferences/genres",
+      { genres: updatedGenres },
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    // Pas besoin d'alert ici, sinon ça pop à chaque clic
+    console.log("Genres sauvegardés :", updatedGenres);
+  } catch (err) {
+    console.error("Erreur lors de la sauvegarde automatique des genres :", err);
   }
 };
+
 
 
 
@@ -103,7 +134,7 @@ const Profile = ({ token, user }) => {
   if (!user) return <p>Chargement du profil...</p>;
 
   // Tri des films likés
-  const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => a.rating - b.rating);
+const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating - a.rating);
 
   // Composant note circulaire
   const CircularRating = ({ value }) => {
@@ -153,7 +184,7 @@ const Profile = ({ token, user }) => {
                   padding: "8px 12px",
                   borderRadius: "20px",
                   backgroundColor: selectedGenres.includes(genre.id) ? "#f5b50a" : "#444",
-                  color: selectedGenres.includes(genre) ? "#000" : "#fff",
+                  color: selectedGenres.includes(genre.id) ? "#000" : "#fff",
                   cursor: "pointer",
                   fontWeight: "500",
                   transition: "0.2s",
@@ -331,13 +362,22 @@ const Profile = ({ token, user }) => {
                 >
                   {movie.title}
                 </h3>
-                
-                {/* Note utilisateur (optionnel) */}
-                {movie.rating && (
-                  <div style={{ marginTop: "8px" }}>
-                    <CircularRating value={movie.rating} />
-                  </div>
-                )}
+                <div style={{ marginTop: "5px" }}>
+                   {movie.rating ? (
+                    <span style={{ color: "#FFD700", fontWeight: "bold", fontSize: "14px" }}>
+                    {/* Affiche les étoiles jaunes */}
+                   {"★".repeat(movie.rating)}
+                   {/* Affiche les étoiles grises pour compléter jusqu'à 5 */}
+                   <span style={{ color: "#555" }}>{"★".repeat(5 - movie.rating)}</span>
+                   
+                  </span>
+                  ) : (
+                  <span style={{ color: "#777", fontSize: "12px", fontStyle: "italic" }}>
+                Pas de note
+              </span>
+      )}
+    </div>
+
               </Link>
             ))}
             </div>
