@@ -2,12 +2,12 @@
 const express = require("express");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User"); // ton schéma User enrichi
+const User = require("../models/User"); 
 
 const router = express.Router();
 
 /**
- * 📌 ROUTE : Inscription utilisateur
+ * ROUTE : Inscription utilisateur
  * @route POST /api/auth/register
  * @body { username, email, password }
  */
@@ -41,7 +41,7 @@ router.post("/register", async (req, res) => {
 });
 
 /**
- * 📌 ROUTE : Connexion utilisateur
+ * ROUTE : Connexion utilisateur
  * @route POST /api/auth/login
  * @body { email, password }
  */
@@ -65,7 +65,7 @@ router.post("/login", async (req, res) => {
     );
 
     res.json({
-      message: "Connexion réussie ✅",
+      message: "Connexion réussie",
       token,
       user: { id: user._id, username: user.username, email: user.email }
     });
@@ -76,7 +76,7 @@ router.post("/login", async (req, res) => {
 });
 
 /**
- * 📌 ROUTE : Profil utilisateur (protégée par JWT)
+ * ROUTE : Profil utilisateur (protégée par JWT)
  * @route GET /api/auth/profile
  * @header Authorization: Bearer <token>
  */
@@ -93,7 +93,7 @@ router.get("/profile", async (req, res) => {
 
     if (!user) return res.status(404).json({ error: "Utilisateur non trouvé" });
 
-    res.json({ message: "✅ Accès autorisé", user });
+    res.json({ message: "Accès autorisé", user });
   } catch (err) {
     res.status(401).json({ error: "Token invalide" });
   }

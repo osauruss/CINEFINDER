@@ -9,12 +9,12 @@ const jwt = require("jsonwebtoken");
 
 
 
-// 📌 Ajouter un film à la watchlist
+// Ajouter un film à la watchlist
 router.post("/add", authMiddleware, async (req, res) => {
   try {
     const { tmdbId, title, poster } = req.body;
 
-    console.log("🧠 Requête reçue pour ajouter :", { tmdbId, title, poster });
+    console.log("Requête reçue pour ajouter :", { tmdbId, title, poster });
 
     const user = await User.findById(req.userId);
     if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
@@ -27,14 +27,14 @@ router.post("/add", authMiddleware, async (req, res) => {
     user.watchlist.push({ tmdbId, title, poster });
     await user.save();
 
-    res.status(200).json({ message: "Film ajouté à la watchlist ✅" });
+    res.status(200).json({ message: "Film ajouté à la watchlist" });
   } catch (err) {
-    console.error("❌ Erreur dans /add :", err);
+    console.error("Erreur dans /add :", err);
     res.status(500).json({ message: "Erreur serveur" });
   }
 });
 
-// 📌 Supprimer un film de la watchlist
+// Supprimer un film de la watchlist
 router.delete("/remove/:tmdbId", authMiddleware, async (req, res) => {
   try {
     const { tmdbId } = req.params;
@@ -48,9 +48,9 @@ router.delete("/remove/:tmdbId", authMiddleware, async (req, res) => {
 
     await user.save();
 
-    res.status(200).json({ message: "Film retiré de la watchlist 🗑️" });
+    res.status(200).json({ message: "Film retiré de la watchlist" });
   } catch (err) {
-    console.error("❌ Erreur dans /remove :", err);
+    console.error("Erreur dans /remove :", err);
     res.status(500).json({ message: "Erreur serveur" });
   }
 });
