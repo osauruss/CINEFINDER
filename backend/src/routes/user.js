@@ -66,14 +66,14 @@ router.post("/preferences/actors/:actorId", authMiddleware, async (req, res) => 
   }
 });
 
-// 🗑️ Supprimer un acteur des favoris
+// Supprimer un acteur des favoris
 router.delete("/preferences/actors/:id", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     
     // Debug (tu pourras les enlever après)
-    console.log("🚀 Route DELETE appelée");
-    console.log("👉 ID de l'utilisateur (req.userId) :", req.userId);
+    console.log("Route DELETE appelée");
+    console.log("ID de l'utilisateur (req.userId) :", req.userId);
     
     // 4. On utilise req.userId
     const user = await User.findById(req.userId);
