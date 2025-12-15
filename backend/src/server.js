@@ -51,6 +51,10 @@ async function startServer() {
     const movieRoutes = require("./routes/movies");
     app.use("/api/movies", movieRoutes);
 
+    const tmdbRoutes = require("./routes/tmdb");
+    app.use("/api/tmdb", tmdbRoutes);
+
+
     const authRoutes = require("./routes/auth");
     app.use("/api/auth", authRoutes);
 
