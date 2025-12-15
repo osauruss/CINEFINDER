@@ -5,6 +5,8 @@ import api from "../api";
 export default function Movies({ user }) {
   const [movies, setMovies] = useState([]);
   const [recommendations, setRecommendations] = useState([]);
+  const [actorRecs, setActorRecs] = useState([]);
+  const [actorName, setActorName] = useState("");
   const [loading, setLoading] = useState(false);
 
   const location = useLocation();
@@ -20,6 +22,11 @@ export default function Movies({ user }) {
       if (user && user.preferences?.genres?.length > 0) {
         fetchRecommendations(user.preferences.genres[0]);
       }
+      
+   if (user && user.preferences?.genres?.length > 0) {
+    const randomNumber = Math.floor(Math.random() * user.preferences.actors.length);
+
+      actorRecommendations(user.preferences.actors[randomNumber]);}
     }
   }, [query, user]);
 
@@ -53,6 +60,24 @@ export default function Movies({ user }) {
       setRecommendations(response.data.results);
     } catch (err) {
       console.error("❌ Erreur recommandations :", err);
+    }
+  };
+
+  const actorRecommendations = async (actorId) => {
+    try {
+      console.log("🎬 Fetching actor info and movies for ID:", actorId);
+      
+     
+      const actorResponse = await api.get(`/movies/actor/${actorId}`);
+      console.log("🎭 Actor info:", actorResponse.data);
+      setActorName(actorResponse.data.name);
+      
+
+      const moviesResponse = await api.get(`/movies/cast?with_cast=${actorId}`);
+      console.log("🎬 Movies found:", moviesResponse.data.results.length);
+      setActorRecs(moviesResponse.data.results);
+    } catch (err) {
+      console.error("❌ Erreur recommandations acteur :", err);
     }
   };
 
@@ -124,14 +149,12 @@ export default function Movies({ user }) {
     </div>
   );
 
-  // ✅ CORRECTION : Retirer scrollbarWidth
   const scrollContainerStyle = {
     display: "flex",
     overflowX: "auto",
     gap: "20px",
     paddingBottom: "20px",
     marginBottom: "40px",
-    // scrollbarWidth retiré pour laisser le CSS personnalisé s'appliquer
   };
 
   const gridContainerStyle = {
@@ -172,14 +195,7 @@ export default function Movies({ user }) {
              </section>
           )}
 
-          <section>
-             <h2 style={{ borderBottom: "3px solid #f5b50a", display: "inline-block", marginBottom: "20px" ,color: "#ffffffff"}}> Films Populaires</h2>
-             {loading ? <p>Chargement...</p> : (
-               <div style={gridContainerStyle}>
-                 {movies.map((m) => <MovieCard key={m.id} movie={m} />)}
-               </div>
-             )}
-          </section>
+        
 
           {user && recommendations.length > 0 && (
              <section style={{ marginTop: "50px" }}>
@@ -191,6 +207,25 @@ export default function Movies({ user }) {
                </div>
              </section>
           )}
+
+          {actorRecs.length > 0 && (
+             <section style={{ marginTop: "50px" }}>
+               <h2 style={{ borderBottom: "3px solid #2196f3", display: "inline-block", marginBottom: "20px", color: "#fff" }}>
+                  🎬 Car vous aimez {actorName}
+               </h2>
+              <div className="scroll-bar-custom" style={scrollContainerStyle}>
+                 {actorRecs.map((m) => <MovieCard key={m.id} movie={m} />)}
+               </div>
+             </section>
+          )}
+            <section>
+             <h2 style={{ borderBottom: "3px solid #f5b50a", display: "inline-block", marginBottom: "20px" ,color: "#ffffffff"}}> Films Populaires</h2>
+             {loading ? <p>Chargement...</p> : (
+               <div style={gridContainerStyle}>
+                 {movies.map((m) => <MovieCard key={m.id} movie={m} />)}
+               </div>
+             )}
+          </section>
         </>
       )}
     </div>
