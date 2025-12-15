@@ -7,6 +7,8 @@ export default function Movies({ user }) {
   const [recommendations, setRecommendations] = useState([]);
   const [actorRecs, setActorRecs] = useState([]);
   const [actorName, setActorName] = useState("");
+    const [filmlikereco, setfilmlikereco] = useState("");
+       const [filmlikereco_movies, setfilmlikereco_movies] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const location = useLocation();
@@ -23,11 +25,25 @@ export default function Movies({ user }) {
         fetchRecommendations(user.preferences.genres[0]);
       }
       
-   if (user && user.preferences?.genres?.length > 0) {
+   if (user && user.preferences?.actors?.length > 0) {
     const randomNumber = Math.floor(Math.random() * user.preferences.actors.length);
 
       actorRecommendations(user.preferences.actors[randomNumber]);}
     }
+
+if (user && user.likedMovies?.length > 0) {
+
+  const wellRatedMovies = user.likedMovies.filter(
+    (movie) => movie.rating >= 3
+  );
+
+  if (wellRatedMovies.length > 0) {
+    const randomNumber = Math.floor(Math.random() * wellRatedMovies.length);
+    filmRecommendations(wellRatedMovies[randomNumber].tmdbId);
+  }
+}
+
+    
   }, [query, user]);
 
   const fetchPopularMovies = async () => {
@@ -78,6 +94,24 @@ export default function Movies({ user }) {
       setActorRecs(moviesResponse.data.results);
     } catch (err) {
       console.error("❌ Erreur recommandations acteur :", err);
+    }
+  };
+
+
+    const filmRecommendations = async (movieId) => {
+    try {
+    
+      
+     
+      const filmreconameResponse = await api.get(`/movies/filmreco/${movieId}`);
+      setfilmlikereco(filmreconameResponse.data.title);
+      
+
+      const filmrecomoviesResponse = await api.get(`/movies/filmrecomovies?with_movie=${movieId}`);
+      console.log("🎬 Movies found:", filmrecomoviesResponse.data.results.length);
+      setfilmlikereco_movies(filmrecomoviesResponse.data.results);
+    } catch (err) {
+      console.error("❌ Erreur recommandations movies :", err);
     }
   };
 
@@ -215,6 +249,16 @@ export default function Movies({ user }) {
                </h2>
               <div className="scroll-bar-custom" style={scrollContainerStyle}>
                  {actorRecs.map((m) => <MovieCard key={m.id} movie={m} />)}
+               </div>
+             </section>
+          )}
+          {filmlikereco_movies.length > 0 && (
+             <section style={{ marginTop: "50px" }}>
+               <h2 style={{ borderBottom: "3px solid #f89f", display: "inline-block", marginBottom: "20px", color: "#fff" }}>
+                  Vous avez apprécié : {filmlikereco}, vous allez adorer aussi
+               </h2>
+              <div className="scroll-bar-custom" style={scrollContainerStyle}>
+                 {filmlikereco_movies.map((m) => <MovieCard key={m.id} movie={m} />)}
                </div>
              </section>
           )}
