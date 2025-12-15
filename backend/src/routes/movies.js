@@ -15,6 +15,10 @@ router.get("/popular", async (req, res) => {
   }
 });
 
+
+
+
+
 // Pour récuperer les providers d’un film
 router.get("/:id/providers", async (req, res) => {
   try {
@@ -92,7 +96,7 @@ router.get("/credits/:id", async (req, res) => {
   }
 });
 
-// 🔍 Recherche de films par nom
+// Recherche de films par nom
 router.get("/search", async (req, res) => {
   try {
     const query = req.query.query; // ex: /api/movies/search?query=inception
@@ -150,7 +154,7 @@ router.get("/discover", async (req, res) => {
 
 module.exports = router;
 
-module.exports = router;
+
 
 
 /*

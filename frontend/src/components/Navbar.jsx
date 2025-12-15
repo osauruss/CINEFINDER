@@ -14,10 +14,12 @@ const Navbar = ({ token, setToken, user }) => {
   };
 
   const handleSearch = (e) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-    navigate(`/movies?query=${query}`);
-  };
+  e.preventDefault();
+  if (!query.trim()) return;
+
+  navigate(`/search?query=${encodeURIComponent(query)}`);
+};
+
 
   return (
     <nav
