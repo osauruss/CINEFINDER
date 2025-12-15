@@ -12,7 +12,7 @@ const MovieDetails = ({ token, user, setUser }) => {
 
   const [addedToWatchlist, setAddedToWatchlist] = useState(false);
   
-  // 🆕 ÉTAT POUR LA NOTE (0 = pas noté)
+  // ÉTAT POUR LA NOTE (0 = pas noté)
   const [userRating, setUserRating] = useState(0);
 
   // FETCH DATA (inchangé)
@@ -51,14 +51,14 @@ const MovieDetails = ({ token, user, setUser }) => {
     fetchProviders();
   }, [id]);
 
-  // 🔄 VÉRIFICATION ÉTAT USER (Watchlist + Note)
+  // VÉRIFICATION ÉTAT USER (Watchlist + Note)
   useEffect(() => {
     if (user && movie) {
       // Watchlist
       if (user.watchlist) {
         setAddedToWatchlist(user.watchlist.some(item => String(item.tmdbId) === String(movie.id)));
       }
-      // 🆕 Note (LikedMovies)
+      // Note (LikedMovies)
       if (user.likedMovies) {
         const foundMovie = user.likedMovies.find(item => String(item.tmdbId) === String(movie.id));
         // Si trouvé, on met la note, sinon 0
@@ -85,7 +85,7 @@ const MovieDetails = ({ token, user, setUser }) => {
     }
   };
 
-  // 🆕 FONCTION DE NOTATION
+  // FONCTION DE NOTATION
   const handleRate = async (score) => {
     if (!token) return alert("Connectez-vous pour noter ce film !");
 
@@ -172,7 +172,7 @@ const MovieDetails = ({ token, user, setUser }) => {
               {addedToWatchlist ? "❌ Retirer Watchlist" : "➕ Ajouter Watchlist"}
             </button>
 
-            {/* ⭐ SYSTÈME DE NOTATION */}
+            {/*  SYSTÈME DE NOTATION */}
             <div style={{ display: "flex", alignItems: "center", background: "#181818", padding: "5px 15px", borderRadius: "10px" }}>
                 <span style={{ marginRight: "10px", fontSize: "0.9rem", color: "#ccc" }}>Votre note :</span>
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -196,8 +196,8 @@ const MovieDetails = ({ token, user, setUser }) => {
           </div>
 
           <div style={{ marginTop: "20px", background: "#181818", borderRadius: "10px", padding: "15px" }}>
-            <p>🎬 <strong>Réalisateur :</strong> {director?.name || "—"}</p>
-            <p>⭐ <strong>Acteur principal :</strong> {leadActor?.name || "—"}</p>
+            <p> <strong>Réalisateur :</strong> {director?.name || "—"}</p>
+            <p> <strong>Acteur principal :</strong> {leadActor?.name || "—"}</p>
           </div>
         </div>
       </div>
@@ -231,10 +231,8 @@ const MovieDetails = ({ token, user, setUser }) => {
         </div>
       )}
       
-      {/* ... (Le reste de ton code Providers et Distribution reste identique) ... */}
-      {/* Pour gagner de la place ici, je ne remets pas tout le bloc providers/cast car tu l'as déjà et il n'a pas besoin de changer */}
-      
-      {/* 📺 Où regarder */}
+    
+      {/* Où regarder */}
       {providers &&
         (providers.flatrate?.length > 0 ||
           providers.rent?.length > 0 ||
@@ -257,7 +255,7 @@ const MovieDetails = ({ token, user, setUser }) => {
                   ))}
                 </div></div>
               )}
-              {/* ... Idem pour Rent et Buy ... */}
+           
             </div>
           </div>
         )}

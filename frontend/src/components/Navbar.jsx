@@ -33,7 +33,7 @@ const Navbar = ({ token, setToken, user }) => {
         position: "relative",
       }}
     >
-      {/* === Zone gauche : Favicon + Films === */}
+      {/* Zone gauche : Favicon + Films */}
       <div style={{ display: "flex", alignItems: "center", gap: "25px" }}>
         <Link 
           to="/" 
@@ -51,7 +51,7 @@ const Navbar = ({ token, setToken, user }) => {
         
       </div>
 
-      {/* === Barre de recherche centrée === */}
+      {/*  Barre de recherche centrée  */}
       <form 
         onSubmit={handleSearch} 
         style={{ 
@@ -115,7 +115,7 @@ const Navbar = ({ token, setToken, user }) => {
         </button>
       </form>
 
-      {/* === Zone utilisateur à droite === */}
+      {/*  Zone utilisateur à droite */}
       <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
         {!token ? (
           <>

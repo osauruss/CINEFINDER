@@ -169,13 +169,13 @@ router.get("/discover", async (req, res) => {
 router.get("/cast", async (req, res) => {
   try {
     const { with_cast } = req.query;
-    console.log("🎬 Recherche films avec acteur ID:", with_cast);
+    console.log(" Recherche films avec acteur ID:", with_cast);
     
     const response = await axios.get(
       `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.TMDB_API_KEY}&language=fr-FR&sort_by=popularity.desc&with_cast=${with_cast}`
     );
     
-    console.log("🎬 Nombre de films trouvés:", response.data.results.length);
+    console.log(" Nombre de films trouvés:", response.data.results.length);
     res.json(response.data);
   } catch (err) {
     console.error("Erreur cast:", err.message);
@@ -202,16 +202,16 @@ router.get("/filmrecomovies", async (req, res) => {
 router.get("/actor/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    console.log("🎭 Recherche acteur ID:", id);
+    console.log(" Recherche acteur ID:", id);
     
     const response = await axios.get(
       `https://api.themoviedb.org/3/person/${id}?api_key=${process.env.TMDB_API_KEY}&language=fr-FR`
     );
     
-    console.log("🎭 Acteur trouvé:", response.data.name);
+    console.log(" Acteur trouvé:", response.data.name);
     res.json(response.data);
   } catch (err) {
-    console.error("❌ Erreur actor:", err.message);
+    console.error("Erreur actor:", err.message);
     res.status(500).json({ error: "Erreur serveur TMDB" });
   }
 });
