@@ -92,6 +92,23 @@ router.get("/credits/:id", async (req, res) => {
   }
 });
 
+router.get("/filmreco/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.TMDB_API_KEY}&language=fr-FR`
+
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    console.error("Erreur filmreco:", error.message);
+    res.status(500).json({ error: "Erreur lors de la récupération des movies reco" });
+  }
+});
+
+
 
 router.get("/search", async (req, res) => {
   try {
@@ -166,6 +183,21 @@ router.get("/cast", async (req, res) => {
   }
 });
 
+router.get("/filmrecomovies", async (req, res) => {
+  try {
+    const { with_movie } = req.query;
+    
+    const response = await axios.get(
+     `https://api.themoviedb.org/3/movie/${with_movie}/recommendations?api_key=${process.env.TMDB_API_KEY}&language=fr-FR`
+    );
+    
+    console.log("🎬 Nombre de films trouvés:", response.data.results.length);
+    res.json(response.data);
+  } catch (err) {
+    console.error("Erreur cast:", err.message);
+    res.status(500).json({ error: "Erreur serveur TMDB" });
+  }
+});
 
 router.get("/actor/:id", async (req, res) => {
   try {
