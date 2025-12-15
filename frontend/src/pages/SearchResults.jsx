@@ -67,9 +67,9 @@ const SearchResults = () => {
 
   return (
     <div style={{ padding: "30px", maxWidth: "1200px", margin: "0 auto", color: "white" }}>
-      <h2>🔍 Résultats pour “{query}”</h2>
+      <h2>Résultats pour “{query}”</h2>
 
-      {/* 🎛️ FILTRES */}
+      {/*FILTRES */}
       <div
         style={{
           display: "flex",
@@ -127,7 +127,7 @@ const SearchResults = () => {
         </div>
       </div>
 
-      {/* 🎬 RÉSULTATS */}
+      {/* RÉSULTATS */}
       {loading ? (
         <p>Chargement...</p>
       ) : results.length === 0 ? (

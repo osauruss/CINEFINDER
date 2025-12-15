@@ -130,7 +130,7 @@ const Profile = ({ token, user }) => {
     fetchFavActors();
   }, [user]); // Se relance si l'objet user change
 
-  if (!token) return <p>❌ Vous devez être connecté pour voir votre profil.</p>;
+  if (!token) return <p>Vous devez être connecté pour voir votre profil.</p>;
   if (!user) return <p>Chargement du profil...</p>;
 
   // Tri des films likés
@@ -169,12 +169,12 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
       <h2 style={{ textAlign: "center" }}>👤 Profil de {user.username}</h2>
       <p><strong>Email :</strong> {user.email}</p>
       
-      {/* 🎯 Préférences */}
+      {/*  Préférences */}
       <div style={{ marginTop: "20px", background: "#2a2a2a", padding: "15px", borderRadius: "10px",color:"white" }}>
-        <h3>🎯 Préférences</h3>
-        {/* 🎨 Genres préférés modifiables */}
+        <h3> Préférences</h3>
+        {/*  Genres préférés modifiables */}
         <div style={{ marginTop: "30px", background: "#2a2a2a", padding: "20px", borderRadius: "14px" }}>
-          <h3>🎨 Genres préférés</h3>
+          <h3> Genres préférés</h3>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "10px" }}>
             {TMDB_GENRES.map((genre) => (
               <div
@@ -285,7 +285,7 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
         )}
       </div>
 
-      {/* ⭐ Films aimés */}
+      {/*  Films aimés */}
       <div style={{ marginTop: "50px" }}>
         <h2
           style={{
@@ -296,7 +296,7 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
             marginBottom: "20px",
           }}
         >
-          ⭐ Films aimés
+          Films vus et notés
         </h2>
         
         <div style={{ background: "#2a2a2a", padding: "20px", borderRadius: "14px", boxShadow: "0 4px 12px rgba(0,0,0,0.06)" }}>
@@ -391,7 +391,7 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
 
 
         {/* Watchlist */}
-      {/* 🎬 Watchlist */}
+      {/*  Watchlist */}
 <div style={{ marginTop: "50px" }}>
   <h2
     style={{
@@ -402,7 +402,7 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
       marginBottom: "20px",
     }}
   >
-    🎬 Watchlist
+     Watchlist
   </h2>
 
   <div

@@ -53,7 +53,7 @@ if (user && user.likedMovies?.length > 0) {
       setMovies(response.data.results);
       setLoading(false);
     } catch (err) {
-      console.error("❌ Erreur films populaires :", err);
+      console.error("Erreur films populaires :", err);
       setLoading(false);
     }
   };
@@ -65,7 +65,7 @@ if (user && user.likedMovies?.length > 0) {
       setMovies(response.data.results);
       setLoading(false);
     } catch (err) {
-      console.error("❌ Erreur recherche :", err);
+      console.error("Erreur recherche :", err);
       setLoading(false);
     }
   };
@@ -75,25 +75,25 @@ if (user && user.likedMovies?.length > 0) {
       const response = await api.get(`/movies/discover?with_genres=${genreId}`);
       setRecommendations(response.data.results);
     } catch (err) {
-      console.error("❌ Erreur recommandations :", err);
+      console.error("Erreur recommandations :", err);
     }
   };
 
   const actorRecommendations = async (actorId) => {
     try {
-      console.log("🎬 Fetching actor info and movies for ID:", actorId);
+      console.log("Fetching actor info and movies for ID:", actorId);
       
      
       const actorResponse = await api.get(`/movies/actor/${actorId}`);
-      console.log("🎭 Actor info:", actorResponse.data);
+      console.log(" Actor info:", actorResponse.data);
       setActorName(actorResponse.data.name);
       
 
       const moviesResponse = await api.get(`/movies/cast?with_cast=${actorId}`);
-      console.log("🎬 Movies found:", moviesResponse.data.results.length);
+      console.log("Movies found:", moviesResponse.data.results.length);
       setActorRecs(moviesResponse.data.results);
     } catch (err) {
-      console.error("❌ Erreur recommandations acteur :", err);
+      console.error("Erreur recommandations acteur :", err);
     }
   };
 
@@ -209,7 +209,7 @@ if (user && user.likedMovies?.length > 0) {
       
       {query ? (
         <>
-           <h2>🔍 Résultats pour : "{query}"</h2>
+           <h2>Résultats pour : "{query}"</h2>
            {loading ? <p>Chargement...</p> : (
              <div style={gridContainerStyle}>
                {movies.map((m) => <MovieCard key={m.id} movie={m} />)}
@@ -221,7 +221,7 @@ if (user && user.likedMovies?.length > 0) {
           {user && user.watchlist && user.watchlist.length > 0 && (
              <section>
                <h2 style={{ borderBottom: "3px solid #f5b50a", display: "inline-block", marginBottom: "20px", color: "#fff" }}>
-                  📋 Ma Watchlist
+                  Ma Watchlist
                </h2>
                <div className="scroll-bar-custom" style={scrollContainerStyle}>
                  {user.watchlist.map((m) => <MovieCard key={m.tmdbId} movie={m} />)}
@@ -234,7 +234,7 @@ if (user && user.likedMovies?.length > 0) {
           {user && recommendations.length > 0 && (
              <section style={{ marginTop: "50px" }}>
                <h2 style={{ borderBottom: "3px solid #00c853", display: "inline-block", marginBottom: "20px", color: "#fff" }}>
-                  ✨ Recommandés pour vous
+                  Recommandés pour vous
                </h2>
               <div className="scroll-bar-custom" style={scrollContainerStyle}>
                  {recommendations.map((m) => <MovieCard key={m.id} movie={m} />)}
@@ -245,7 +245,7 @@ if (user && user.likedMovies?.length > 0) {
           {actorRecs.length > 0 && (
              <section style={{ marginTop: "50px" }}>
                <h2 style={{ borderBottom: "3px solid #2196f3", display: "inline-block", marginBottom: "20px", color: "#fff" }}>
-                  🎬 Car vous aimez {actorName}
+                  Car vous aimez {actorName}
                </h2>
               <div className="scroll-bar-custom" style={scrollContainerStyle}>
                  {actorRecs.map((m) => <MovieCard key={m.id} movie={m} />)}
