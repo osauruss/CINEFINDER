@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import axios from "axios";
-import Home from "./pages/Home";
 import Movies from "./pages/Movies";
 import Login from "./components/Login";
 import Register from "./components/Register";
@@ -48,8 +47,8 @@ const App = () => {
       <div style={{ backgroundColor: "#1a1a1a", minHeight: "100vh" }}>
         <Navbar token={token} setToken={setToken} user={user} />
         <Routes>
-          <Route path="/" element={<Home token={token} />} />
-          <Route path="/movies" element={<Movies user={user} />} />
+          <Route path="/" element={<Movies user={user} />} />
+          
           
           <Route path="/search" element={<Search />} />
           <Route path="/profile" element={<Profile token={token} user={user} />} />
