@@ -103,7 +103,7 @@ const Profile = ({ token, user }) => {
   if (!user) return <p>Chargement du profil...</p>;
 
   // Tri des films likés
-  const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => a.rating - b.rating);
+const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating - a.rating);
 
   // Composant note circulaire
   const CircularRating = ({ value }) => {
@@ -331,13 +331,22 @@ const Profile = ({ token, user }) => {
                 >
                   {movie.title}
                 </h3>
-                
-                {/* Note utilisateur (optionnel) */}
-                {movie.rating && (
-                  <div style={{ marginTop: "8px" }}>
-                    <CircularRating value={movie.rating} />
-                  </div>
-                )}
+                <div style={{ marginTop: "5px" }}>
+                   {movie.rating ? (
+                    <span style={{ color: "#FFD700", fontWeight: "bold", fontSize: "14px" }}>
+                    {/* Affiche les étoiles jaunes */}
+                   {"★".repeat(movie.rating)}
+                   {/* Affiche les étoiles grises pour compléter jusqu'à 5 */}
+                   <span style={{ color: "#555" }}>{"★".repeat(5 - movie.rating)}</span>
+                   
+                  </span>
+                  ) : (
+                  <span style={{ color: "#777", fontSize: "12px", fontStyle: "italic" }}>
+                Pas de note
+              </span>
+      )}
+    </div>
+
               </Link>
             ))}
             </div>
