@@ -5,7 +5,15 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   likedMovies: [
-    { tmdbId: String, title: String, poster: String }
+    {
+      tmdbId: { type: String, required: true },
+      title: { type: String },
+      poster: { type: String },
+      // 🚨 C'est cette ligne qui manquait ! 
+      // Sans elle, Mongoose jette la note à la poubelle avant d'enregistrer.
+      rating: { type: Number, default: 0 }, 
+      addedAt: { type: Date, default: Date.now }
+    }
   ],
   watchlist: [
     {

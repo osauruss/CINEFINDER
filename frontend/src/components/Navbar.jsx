@@ -14,10 +14,12 @@ const Navbar = ({ token, setToken, user }) => {
   };
 
   const handleSearch = (e) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-    navigate(`/movies?query=${query}`);
-  };
+  e.preventDefault();
+  if (!query.trim()) return;
+
+  navigate(`/search?query=${encodeURIComponent(query)}`);
+};
+
 
   return (
     <nav
@@ -46,9 +48,7 @@ const Navbar = ({ token, setToken, user }) => {
           CineFinder
         </Link>
 
-        <Link to="/movies" style={{ color: "#fff", textDecoration: "none", fontSize: "16px" }}>
-            Films
-        </Link>
+        
       </div>
 
       {/* === Barre de recherche centrée === */}
