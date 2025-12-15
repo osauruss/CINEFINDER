@@ -285,7 +285,7 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
         )}
       </div>
 
-      {/* ⭐ Films aimés */}
+      {/*  Films aimés */}
       <div style={{ marginTop: "50px" }}>
         <h2
           style={{
@@ -296,7 +296,7 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
             marginBottom: "20px",
           }}
         >
-          ⭐ Films aimés
+          Films vus et notés
         </h2>
         
         <div style={{ background: "#2a2a2a", padding: "20px", borderRadius: "14px", boxShadow: "0 4px 12px rgba(0,0,0,0.06)" }}>
