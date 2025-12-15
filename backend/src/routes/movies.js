@@ -3,7 +3,7 @@ const axios = require("axios");
 
 const router = express.Router();
 
-// Films populaires
+
 router.get("/popular", async (req, res) => {
   try {
     const response = await axios.get(
@@ -16,10 +16,6 @@ router.get("/popular", async (req, res) => {
 });
 
 
-
-
-
-// Pour récuperer les providers d’un film
 router.get("/:id/providers", async (req, res) => {
   try {
     const { id } = req.params;
@@ -30,7 +26,7 @@ router.get("/:id/providers", async (req, res) => {
 
     const data = await response.json();
 
-    // On récupère l'entrée FR (ou autre pays si tu veux)
+
     const info = data.results?.FR;
 
     if (!info) {
@@ -51,7 +47,7 @@ router.get("/:id/providers", async (req, res) => {
 });
 
 
-// Pour récuperer les movie trailer de YouTube
+
 router.get("/:id/trailer", async (req, res) => {
   try {
     const { id } = req.params;
@@ -62,7 +58,7 @@ router.get("/:id/trailer", async (req, res) => {
 
     const data = await response.json();
 
-    // Trouver le trailer officiel
+   
     const trailer = data.results.find(
       (v) =>
         v.type === "Trailer" &&
@@ -96,10 +92,10 @@ router.get("/credits/:id", async (req, res) => {
   }
 });
 
-// Recherche de films par nom
+
 router.get("/search", async (req, res) => {
   try {
-    const query = req.query.query; // ex: /api/movies/search?query=inception
+    const query = req.query.query; 
     if (!query) {
       return res.status(400).json({ error: "Paramètre 'query' manquant" });
     }
@@ -125,7 +121,7 @@ router.get("/search", async (req, res) => {
 });
 
 
-// Détails d’un film
+
 router.get("/details/:id", async (req, res) => {
   try {
     const response = await axios.get(
@@ -138,10 +134,10 @@ router.get("/details/:id", async (req, res) => {
 });
 
 
-// 🔍 Découvrir des films par genre (pour les recommandations)
+
 router.get("/discover", async (req, res) => {
   try {
-    const { with_genres } = req.query; // On récupère l'ID du genre
+    const { with_genres } = req.query; 
     const response = await axios.get(
       `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.TMDB_API_KEY}&language=fr-FR&sort_by=popularity.desc&with_genres=${with_genres}`
     );
@@ -152,36 +148,40 @@ router.get("/discover", async (req, res) => {
   }
 });
 
-module.exports = router;
 
-
-
-
-/*
-
-// backend/src/routes/movies.js
-const express = require("express");
-const axios = require("axios");
-const router = express.Router();
-
-// Route test : récupérer les films populaires de TMDB
-router.get("/popular", async (req, res) => {
+router.get("/cast", async (req, res) => {
   try {
-    // On utilise la clé API stockée dans .env
-    const response = await axios.get("https://api.themoviedb.org/3/movie/popular", {
-      params: {
-        api_key: process.env.TMDB_API_KEY, // clé TMDB
-        language: "fr-FR",                // films en français
-        page: 1                            // première page
-      }
-    });
-
-    // renvoie les données récupérées de TMDB
+    const { with_cast } = req.query;
+    console.log("🎬 Recherche films avec acteur ID:", with_cast);
+    
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/discover/movie?api_key=${process.env.TMDB_API_KEY}&language=fr-FR&sort_by=popularity.desc&with_cast=${with_cast}`
+    );
+    
+    console.log("🎬 Nombre de films trouvés:", response.data.results.length);
     res.json(response.data);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Erreur lors de la requête TMDB" });
+    console.error("Erreur cast:", err.message);
+    res.status(500).json({ error: "Erreur serveur TMDB" });
   }
 });
 
-module.exports = router;*/
+
+router.get("/actor/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    console.log("🎭 Recherche acteur ID:", id);
+    
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/person/${id}?api_key=${process.env.TMDB_API_KEY}&language=fr-FR`
+    );
+    
+    console.log("🎭 Acteur trouvé:", response.data.name);
+    res.json(response.data);
+  } catch (err) {
+    console.error("❌ Erreur actor:", err.message);
+    res.status(500).json({ error: "Erreur serveur TMDB" });
+  }
+});
+
+module.exports = router;
