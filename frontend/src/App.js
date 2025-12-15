@@ -11,6 +11,7 @@ import MovieDetails from "./pages/MovieDetails";
 import Navbar from "./components/Navbar";
 import Profile from "./pages/Profile";
 import ActorDetails from "./pages/ActorDetails";
+import Search from "./pages/SearchResults";
 import './App.css';
 
 
@@ -49,6 +50,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<Home token={token} />} />
           <Route path="/movies" element={<Movies user={user} />} />
+          
+          <Route path="/search" element={<Search />} />
           <Route path="/profile" element={<Profile token={token} user={user} />} />
           <Route 
            path="/actor/:id" 
