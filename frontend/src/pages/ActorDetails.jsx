@@ -171,7 +171,7 @@ const ActorDetails = ({ token, user, setUser }) => {
             style={{
               fontSize: "2.2rem",
               marginBottom: "10px",
-              color: "#111",
+              color: "#fff",
               fontWeight: "700",
             }}
           >
