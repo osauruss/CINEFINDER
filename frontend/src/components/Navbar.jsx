@@ -48,9 +48,7 @@ const Navbar = ({ token, setToken, user }) => {
           CineFinder
         </Link>
 
-        <Link to="/movies" style={{ color: "#fff", textDecoration: "none", fontSize: "16px" }}>
-            Films
-        </Link>
+        
       </div>
 
       {/* === Barre de recherche centrée === */}
