@@ -1,22 +1,21 @@
+View the repository status
 
-
-Voir l’état du dépôt
 git status
 
-git pull pour recup le reste 
+git pull to retrieve the rest
 
-Montre les fichiers modifiés, ajoutés ou non suivis.
+Shows modified, added, or untracked files
 
-Ajouter un fichier à suivre
-git add nom_du_fichier.txt
-(Pour tout ajouter : git add .)
+Add a file to track
+git add filename.txt
 
-git commit -m "Description claire du changement"
+(To add everything: git add .)
+
+git commit -m "Clear description of the change"
 
 git push
 
-
-POUR FUSIONNER  ENVOYER DEV DANS MAIN 
+TO MERGE, SEND DEV INTO MAIN
 git switch main
 git merge dev -m "v1.1"
 git push

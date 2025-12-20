@@ -23,7 +23,7 @@ const SearchResults = () => {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // filtres
+  // filters
   const [selectedGenres, setSelectedGenres] = useState([]);
   const [minRating, setMinRating] = useState(0);
 
@@ -45,7 +45,7 @@ const SearchResults = () => {
           }
         );
 
-        // On garde uniquement les films
+        // We only keep the films
         setResults(res.data.results.filter(r => r.media_type === "movie"));
       } catch (err) {
         console.error(err);
@@ -69,7 +69,7 @@ const SearchResults = () => {
     <div style={{ padding: "30px", maxWidth: "1200px", margin: "0 auto", color: "white" }}>
       <h2>Résultats pour “{query}”</h2>
 
-      {/*FILTRES */}
+      {/*FILTERS */}
       <div
         style={{
           display: "flex",
@@ -103,7 +103,7 @@ const SearchResults = () => {
           </div>
         </div>
 
-        {/* Note min */}
+        {/* Minimum rating */}
         <div>
           <strong>Note minimale :</strong>
           <select
@@ -127,7 +127,7 @@ const SearchResults = () => {
         </div>
       </div>
 
-      {/* RÉSULTATS */}
+      {/* RESULTS */}
       {loading ? (
         <p>Chargement...</p>
       ) : results.length === 0 ? (

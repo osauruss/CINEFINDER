@@ -53,7 +53,7 @@ if (user && user.likedMovies?.length > 0) {
       setMovies(response.data.results);
       setLoading(false);
     } catch (err) {
-      console.error("Erreur films populaires :", err);
+      console.error("Popular Films Error :", err);
       setLoading(false);
     }
   };
@@ -65,7 +65,7 @@ if (user && user.likedMovies?.length > 0) {
       setMovies(response.data.results);
       setLoading(false);
     } catch (err) {
-      console.error("Erreur recherche :", err);
+      console.error("Search error:", err);
       setLoading(false);
     }
   };
@@ -75,7 +75,7 @@ if (user && user.likedMovies?.length > 0) {
       const response = await api.get(`/movies/discover?with_genres=${genreId}`);
       setRecommendations(response.data.results);
     } catch (err) {
-      console.error("Erreur recommandations :", err);
+      console.error("Error recommendations :", err);
     }
   };
 
@@ -93,7 +93,7 @@ if (user && user.likedMovies?.length > 0) {
       console.log("Movies found:", moviesResponse.data.results.length);
       setActorRecs(moviesResponse.data.results);
     } catch (err) {
-      console.error("Erreur recommandations acteur :", err);
+      console.error("Error in actor recommendations:", err);
     }
   };
 
@@ -111,7 +111,7 @@ if (user && user.likedMovies?.length > 0) {
       console.log("🎬 Movies found:", filmrecomoviesResponse.data.results.length);
       setfilmlikereco_movies(filmrecomoviesResponse.data.results);
     } catch (err) {
-      console.error("❌ Erreur recommandations movies :", err);
+      console.error(" Error movie recommendations :", err);
     }
   };
 

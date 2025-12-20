@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
-// On récupère token, user, et setUser
+// we receive token, user, and setUser
 const ActorDetails = ({ token, user, setUser }) => {
   const { id } = useParams();
   const [actor, setActor] = useState(null);
@@ -19,7 +19,7 @@ const ActorDetails = ({ token, user, setUser }) => {
         const resMovies = await axios.get(`http://localhost:5000/api/actors/movies/${id}`);
         setMovies(resMovies.data.cast);
 
-        // Vérification via l'objet 'user' global 
+        // Verification via the global 'user' object
         if (user && user.preferences && user.preferences.actors) {
            const alreadyFav = user.preferences.actors.some(
              (actorId) => String(actorId) === String(id)
@@ -31,16 +31,16 @@ const ActorDetails = ({ token, user, setUser }) => {
       }
     };
     fetchActor();
-  }, [id, user]); // On ajoute 'user' aux dépendances
+  }, [id, user]); //We add 'user' to the dependencies
 
-  //  Fonction Toggle (Ajout / Suppression)
+  //  Toggle function (Add/Delete)
   const handleFavoriteToggle = async () => {
     if (!token) {
       navigate("/login");
       return;
     }
 
-    // CAS 1 : SUPPRESSION
+    //CASE 1: DELETION
     if (isFavorite) {
       try {
         await axios.delete(
@@ -50,7 +50,7 @@ const ActorDetails = ({ token, user, setUser }) => {
         
         setIsFavorite(false);
 
-        // Mise à jour de l'état global
+        // Global status update
         if (user && user.preferences) {
           setUser({
             ...user,
@@ -66,7 +66,7 @@ const ActorDetails = ({ token, user, setUser }) => {
       }
     } 
     
-    // CAS 2 : AJOUT
+    // CASE 2: ADDITION
     else {
       try {
         await axios.post(
@@ -77,14 +77,14 @@ const ActorDetails = ({ token, user, setUser }) => {
         
         setIsFavorite(true);
 
-        // Mise à jour de l'état global
+        // Global status update
         if (user) {
           const currentActors = user.preferences?.actors || [];
           setUser({
             ...user,
             preferences: {
               ...user.preferences,
-              actors: [...currentActors, id] // On ajoute l'ID
+              actors: [...currentActors, id] // We add the ID
             }
           });
         }
@@ -109,7 +109,7 @@ const ActorDetails = ({ token, user, setUser }) => {
         lineHeight: "1.6",
       }}
     >
-      {/* Bloc principal */}
+      {/* Main block*/}
       <div
         style={{
           display: "flex",
@@ -121,7 +121,7 @@ const ActorDetails = ({ token, user, setUser }) => {
           padding: "30px",
         }}
       >
-        {/* Image */}
+        {/* Picture */}
         <div style={{ flex: "1 1 300px", textAlign: "center" }}>
           <img
             src={
@@ -139,12 +139,12 @@ const ActorDetails = ({ token, user, setUser }) => {
             }}
           />
 
-          {/* Bouton Modifier (Toggle) */}
+          {/* Edit button (Toggle) */}
           <button
             onClick={handleFavoriteToggle}
             style={{
               marginTop: "20px",
-              // Rouge si favori, Jaune si pas favori
+              // Red if favorite, Yellow if not favorite
               backgroundColor: isFavorite ? "#e74c3c" : "#f5b50a",
               color: isFavorite ? "#fff" : "#111",
               fontWeight: "600",
@@ -165,7 +165,7 @@ const ActorDetails = ({ token, user, setUser }) => {
           </button>
         </div>
 
-        {/* Infos principales */}
+        {/*Main information*/}
         <div style={{ flex: "2 1 500px" }}>
           <h1
             style={{
@@ -211,7 +211,7 @@ const ActorDetails = ({ token, user, setUser }) => {
         </div>
       </div>
 
-      {/* Liste de films */}
+      {/* List of films */}
       <h2
         style={{
           marginTop: "40px",

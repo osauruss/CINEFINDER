@@ -6,16 +6,16 @@ import { Link } from "react-router-dom";
 
 
 const Profile = ({ token, user }) => {
-  // État pour stocker les objets complets des acteurs (nom, image, id...)
+  //State for storing the complete objects of the actors (name, image, id...)
   const [favActors, setFavActors] = useState([]);
 
   const [selectedGenres, setSelectedGenres] = useState([]);
 
 
-    // Pour gérer les genres sélectionnés
+    // To manage the selected genres
   useEffect(() => {
-    // Normalize stored preferences to TMDB genre IDs.
-    // The backend may store either TMDB IDs (numbers/strings) or genre names.
+// Normalize stored preferences to TMDB genre IDs. 
+// The backend may store either TMDB IDs (numbers/strings) or genre names.
     if (user?.preferences?.genres && Array.isArray(user.preferences.genres)) {
       const ids = user.preferences.genres
         .map((g) => {
@@ -38,7 +38,7 @@ const Profile = ({ token, user }) => {
 
 
 
-  // Liste de tous les genres disponibles
+ // List of all available genres
   const TMDB_GENRES = [
   { id: 28, name: "Action" },
   { id: 12, name: "Aventure" },
@@ -79,7 +79,7 @@ const Profile = ({ token, user }) => {
       { genres: updatedGenres },
       { headers: { Authorization: `Bearer ${token}` } }
     );
-    // Pas besoin d'alert ici, sinon ça pop à chaque clic
+    // No need for an alert here, otherwise it pops up with every click
     console.log("Genres sauvegardés :", updatedGenres);
   } catch (err) {
     console.error("Erreur lors de la sauvegarde automatique des genres :", err);
@@ -93,7 +93,7 @@ const Profile = ({ token, user }) => {
   try {
     await axios.post(
       "http://localhost:5000/api/users/preferences/genres",
-      { genres: selectedGenres }, // ici ce sont les IDs TMDB
+      { genres: selectedGenres }, // Here are the TMDB IDs
       { headers: { Authorization: `Bearer ${token}` } }
     );
     alert("Genres sauvegardés !");
@@ -104,22 +104,22 @@ const Profile = ({ token, user }) => {
 };
 
 
-  // useEffect pour récupérer les détails des acteurs favoris
+  //useEffect to retrieve details of favorite actors
   useEffect(() => {
     const fetchFavActors = async () => {
-      // On vérifie si l'utilisateur a des préférences et des acteurs enregistrés (IDs)
+      //We check if the user has any preferences and registered actors (IDs).
       if (user && user.preferences && user.preferences.actors && user.preferences.actors.length > 0) {
         try {
-          // On crée une liste de requêtes pour chaque ID d'acteur
-          // On utilise la même route que dans ActorDetails : /api/actors/details/:id
+          // We create a list of requests for each actor ID
+          // We use the same route as in ActorDetails: /api/actors/details/:id
           const promises = user.preferences.actors.map((id) =>
             axios.get(`http://localhost:5000/api/actors/details/${id}`)
           );
 
-          // On attend que toutes les requêtes soient finies
+          // We are waiting for all requests to be completed.
           const responses = await Promise.all(promises);
 
-          // On extrait les données (.data) de chaque réponse
+          // We extract the data (.data) from each response
           setFavActors(responses.map((res) => res.data));
         } catch (err) {
           console.error("Erreur lors du chargement des acteurs favoris :", err);
@@ -133,7 +133,7 @@ const Profile = ({ token, user }) => {
   if (!token) return <p>Vous devez être connecté pour voir votre profil.</p>;
   if (!user) return <p>Chargement du profil...</p>;
 
-  // Tri des films likés
+  //Sorting of liked films
 const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating - a.rating);
 
   // Composant note circulaire
@@ -169,10 +169,10 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
       <h2 style={{ textAlign: "center" }}>👤 Profil de {user.username}</h2>
       <p><strong>Email :</strong> {user.email}</p>
       
-      {/*  Préférences */}
+      {/*  Preferences */}
       <div style={{ marginTop: "20px", background: "#2a2a2a", padding: "15px", borderRadius: "10px",color:"white" }}>
         <h3> Préférences</h3>
-        {/*  Genres préférés modifiables */}
+        {/*  Favorite genres can be changed */}
         <div style={{ marginTop: "30px", background: "#2a2a2a", padding: "20px", borderRadius: "14px" }}>
           <h3> Genres préférés</h3>
           <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", marginTop: "10px" }}>
@@ -214,14 +214,14 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
 
       
 
-        {/* Section Acteurs Favoris */}
+        {/* Favorite Actors section */}
         <h4 style={{ marginTop: "20px", marginBottom: "15px",color:"white" }}>Acteurs favoris</h4>
         
         {favActors.length > 0 ? (
           <div  className="scroll-bar-custom"
             style={{
               display: "flex",
-              overflowX: "auto", // Permet le scroll horizontal comme pour les films
+              overflowX: "auto", // Allows horizontal scrolling, just like in movies.
               gap: "20px",
               padding: "15px 0",
             }}
@@ -229,7 +229,7 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
             {favActors.map((actor) => (
               <Link
                 key={actor.id}
-                to={`/actor/${actor.id}`} // Redirection vers la page de l'acteur
+                to={`/actor/${actor.id}`} //Redirecting to the actor's page
                 style={{
                   textDecoration: "none",
                   color: "inherit",
@@ -241,7 +241,7 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
                   boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
                   padding: "10px",
                   transition: "transform 0.2s ease, box-shadow 0.2s ease",
-                  display: "block" // Important pour que le Link prenne la forme du bloc
+                  display: "block" // Important for the Link to take the form of the block
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateY(-5px)";
@@ -263,7 +263,7 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
                     width: "100%",
                     borderRadius: "10px",
                     marginBottom: "8px",
-                    height: "180px", // On fixe une hauteur pour l'uniformité
+                    height: "180px", // A specific height is set for uniformity.
                     objectFit: "cover"
                   }}
                 />
@@ -285,7 +285,7 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
         )}
       </div>
 
-      {/*  Films aimés */}
+      {/*  Favorite films */}
       <div style={{ marginTop: "50px" }}>
         <h2
           style={{
@@ -351,7 +351,7 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
                   }}
                 />
       
-                {/* Titre */}
+                {/* title */}
                 <h3
                   style={{
                     fontSize: "1rem",
@@ -365,9 +365,9 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
                 <div style={{ marginTop: "5px" }}>
                    {movie.rating ? (
                     <span style={{ color: "#FFD700", fontWeight: "bold", fontSize: "14px" }}>
-                    {/* Affiche les étoiles jaunes */}
+                    {/* Display the yellow stars */}
                    {"★".repeat(movie.rating)}
-                   {/* Affiche les étoiles grises pour compléter jusqu'à 5 */}
+                   {/*Display the grey stars to complete up to 5 */}
                    <span style={{ color: "#555" }}>{"★".repeat(5 - movie.rating)}</span>
                    
                   </span>
@@ -466,7 +466,7 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
               }}
             />
 
-            {/* Titre */}
+            {/* Title */}
             <h3
               style={{
                 fontSize: "1rem",
@@ -479,7 +479,7 @@ const sortedLikedMovies = [...(user.likedMovies || [])].sort((a, b) => b.rating 
               {movie.title}
             </h3>
 
-            {/* Ajouté le... */}
+            {/* add the... */}
             {movie.addedAt && (
               <p
                 style={{
