@@ -12,10 +12,10 @@ const MovieDetails = ({ token, user, setUser }) => {
 
   const [addedToWatchlist, setAddedToWatchlist] = useState(false);
   
-  // ÉTAT POUR LA NOTE (0 = pas noté)
+  // STATUS FOR THE GRADE (0 = not rated)
   const [userRating, setUserRating] = useState(0);
 
-  // FETCH DATA (inchangé)
+  // FETCH DATA (unchanged)
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -30,7 +30,7 @@ const MovieDetails = ({ token, user, setUser }) => {
     fetchData();
   }, [id]);
 
-  // FETCH TRAILER & PROVIDERS (inchangés...)
+ // FETCH TRAILER & PROVIDERS (unchanged...)
   useEffect(() => {
     const fetchTrailer = async () => {
       try {
@@ -51,8 +51,8 @@ const MovieDetails = ({ token, user, setUser }) => {
     fetchProviders();
   }, [id]);
 
-  // VÉRIFICATION ÉTAT USER (Watchlist + Note)
-  useEffect(() => {
+// USER STATUS VERIFICATION (Watchlist + Note) 
+useEffect(() => {
     if (user && movie) {
       // Watchlist
       if (user.watchlist) {
@@ -61,13 +61,13 @@ const MovieDetails = ({ token, user, setUser }) => {
       // Note (LikedMovies)
       if (user.likedMovies) {
         const foundMovie = user.likedMovies.find(item => String(item.tmdbId) === String(movie.id));
-        // Si trouvé, on met la note, sinon 0
+        // If found, we give a grade, otherwise 0
         setUserRating(foundMovie ? foundMovie.rating : 0);
       }
     }
   }, [user, movie]);
 
-  // WATCHLIST TOGGLE (inchangé)
+  // TOGGLE WATCHLIST (unchanged) 
   const handleWatchlistToggle = async () => {
     if (!token) return alert("Veuillez vous connecter !");
     if (addedToWatchlist) {
@@ -85,18 +85,18 @@ const MovieDetails = ({ token, user, setUser }) => {
     }
   };
 
-  // FONCTION DE NOTATION
+  // RATING FUNCTION
   const handleRate = async (score) => {
     if (!token) return alert("Connectez-vous pour noter ce film !");
 
-    // Si on clique sur la même note -> On supprime le like (Note = 0)
+    // If we click on the same rating -> We remove the like (rating = 0)
     if (userRating === score) {
       try {
         await axios.delete(`http://localhost:5000/api/liked/remove/${movie.id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setUserRating(0);
-        // Mise à jour User global
+        //Global User Update
         if (user) {
           setUser({
             ...user,
@@ -107,7 +107,7 @@ const MovieDetails = ({ token, user, setUser }) => {
       return;
     }
 
-    // Sinon -> On ajoute/met à jour la note
+    // Otherwise -> We add/update the note
     try {
       await axios.post(
         "http://localhost:5000/api/liked/add",
@@ -115,16 +115,16 @@ const MovieDetails = ({ token, user, setUser }) => {
           tmdbId: movie.id,
           title: movie.title,
           poster: movie.poster_path,
-          rating: score // On envoie la note
+          rating: score //We send the note
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
       setUserRating(score);
 
-      // Mise à jour User global
+      // Global User Update
       if (user) {
-        // On enlève l'ancienne version s'il y en a une pour éviter les doublons
+        // The old version is removed if there is one to avoid duplicates.
         const others = user.likedMovies.filter(m => String(m.tmdbId) !== String(movie.id));
         setUser({
           ...user,
@@ -161,7 +161,7 @@ const MovieDetails = ({ token, user, setUser }) => {
           <p style={{ marginTop: "20px" }}>{movie.overview || "Aucun résumé disponible."}</p>
 
           <div style={{ marginTop: "20px", display: "flex", alignItems: "center", gap: "20px" }}>
-            {/* BOUTON WATCHLIST */}
+            {/*WATCHLIST BUTTON */}
             <button
               onClick={handleWatchlistToggle}
               style={{
@@ -172,7 +172,7 @@ const MovieDetails = ({ token, user, setUser }) => {
               {addedToWatchlist ? "❌ Retirer Watchlist" : "➕ Ajouter Watchlist"}
             </button>
 
-            {/*  SYSTÈME DE NOTATION */}
+            {/* RATING SYSTEM*/}
             <div style={{ display: "flex", alignItems: "center", background: "#181818", padding: "5px 15px", borderRadius: "10px" }}>
                 <span style={{ marginRight: "10px", fontSize: "0.9rem", color: "#ccc" }}>Votre note :</span>
                 {[1, 2, 3, 4, 5].map((star) => (
@@ -182,7 +182,7 @@ const MovieDetails = ({ token, user, setUser }) => {
                         style={{
                             cursor: "pointer",
                             fontSize: "1.8rem",
-                            color: star <= userRating ? "#FFD700" : "#555", // Or si actif, Gris si inactif
+                            color: star <= userRating ? "#FFD700" : "#555", // Gold if active, Grey if inactive
                             transition: "transform 0.2s, color 0.2s",
                             marginRight: "2px"
                         }}
@@ -202,7 +202,7 @@ const MovieDetails = ({ token, user, setUser }) => {
         </div>
       </div>
 
-      {/* ░░░░░░░░░░ Trailer vidéo ░░░░░░░░░░ */}
+      {/* Video trailer */}
       {trailer && (
         <div style={{ marginTop: "40px" }}>
           <h2
@@ -232,7 +232,7 @@ const MovieDetails = ({ token, user, setUser }) => {
       )}
       
     
-      {/* Où regarder */}
+      {/* Where to look */}
       {providers &&
         (providers.flatrate?.length > 0 ||
           providers.rent?.length > 0 ||
@@ -243,7 +243,7 @@ const MovieDetails = ({ token, user, setUser }) => {
             </h2>
             
             <div style={{ display: "flex", flexDirection: "column", gap: "28px" }}>
-              {/* Code providers identique à ce que tu m'as envoyé */}
+              {/*Code providers identical to what you sent me */}
               {providers.flatrate?.length > 0 && (
                 <div><h3 style={{ marginBottom: "12px",color:"white" }}>Streaming</h3>
                 <div style={{ display: "flex", flexWrap: "wrap", gap: "16px" }}>
@@ -260,7 +260,7 @@ const MovieDetails = ({ token, user, setUser }) => {
           </div>
         )}
 
-      {/* ░░░░░░░░░░ Distribution ░░░░░░░░░░ */}
+      {/*Distribution*/}
       <h2 style={{ marginTop: "40px", marginBottom: "20px", fontSize: "1.8rem", borderBottom: "3px solid #f5b50a", display: "inline-block", paddingBottom: "5px" }}>
         Distribution principale
       </h2>
