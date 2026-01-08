@@ -1,68 +1,82 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
-const authMiddleware = require("../middleware/authMiddleware"); // Vérifie que le chemin est bon
+const authMiddleware = require("../middleware/authMiddleware"); // check that user is authenticated
 
-// Aajouter ou noter un film 
+// Add a movie to liked list or rate a movie
 router.post("/add", authMiddleware, async (req, res) => {
   try {
-    // On récupère aussi la note 
+    // get movie data and rating from request body
     const { tmdbId, title, poster, rating } = req.body;
 
+    // find user with ID from auth middleware
     const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    // On cherche si le film est déjà dans la liste
+    // check if movie already exists in liked movies
     const existingIndex = user.likedMovies.findIndex(
       (m) => String(m.tmdbId) === String(tmdbId)
     );
 
     if (existingIndex !== -1) {
-      // CAS 1 : Le film existe déjà -> On MET À JOUR la note
+      // CASE 1: movie already exists -> update rating
       user.likedMovies[existingIndex].rating = rating;
-      // on met à jour le titre/poster si ça a changé
+
+      // update title and poster if changed
       user.likedMovies[existingIndex].title = title;
       user.likedMovies[existingIndex].poster = poster;
       
       await user.save();
-      return res.json({ message: "Note mise à jour", likedMovies: user.likedMovies });
+      return res.json({
+        message: "Rating updated",
+        likedMovies: user.likedMovies
+      });
     } else {
-      // CAS 2 : Le film n'existe pas -> On l'ajoute avec la note
+      // CASE 2: movie does not exist -> add movie with rating
       user.likedMovies.push({ 
         tmdbId, 
         title, 
         poster, 
-        rating, // On enregistre la note
+        rating, // save movie rating
         addedAt: new Date() 
       });
       
       await user.save();
-      return res.json({ message: "Film noté et ajouté ", likedMovies: user.likedMovies });
+      return res.json({
+        message: "Movie rated and added",
+        likedMovies: user.likedMovies
+      });
     }
 
   } catch (err) {
+    // server error
     console.error(err);
-    res.status(500).json({ message: "Erreur serveur" });
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-// Retirer un film liké 
+// Remove a liked movie and its rating
 router.delete("/remove/:tmdbId", authMiddleware, async (req, res) => {
   try {
+    // find user by ID
     const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    // On filtre pour tout garder sauf le film ciblé
+    // keep all movies except the selected one
     user.likedMovies = user.likedMovies.filter(
       (m) => String(m.tmdbId) !== String(req.params.tmdbId)
     );
 
     await user.save();
 
-    res.json({ message: "Film et note retirés", likedMovies: user.likedMovies });
+    res.json({
+      message: "Movie and rating removed",
+      likedMovies: user.likedMovies
+    });
   } catch (err) {
+    // server error
     console.error(err);
-    res.status(500).json({ message: "Erreur serveur" });
+    res.status(500).json({ message: "Server error" });
   }
 });
 
