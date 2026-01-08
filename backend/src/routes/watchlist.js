@@ -6,33 +6,60 @@ const authMiddleware = require("../middleware/authMiddleware");
 
 const jwt = require("jsonwebtoken");
 
-
-
-
-// 📌 Ajouter un film à la watchlist
+// Add a movie to the watchlist
 router.post("/add", authMiddleware, async (req, res) => {
   try {
     const { tmdbId, title, poster } = req.body;
 
-    console.log("🧠 Requête reçue pour ajouter :", { tmdbId, title, poster });
+    // log received request data
+    console.log("Request received to add:", { tmdbId, title, poster });
 
+    // find user by ID from auth middleware
     const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ message: "Utilisateur introuvable" });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Vérifie si le film est déjà dans la liste
-    const alreadyAdded = user.watchlist.some((m) => String(m.tmdbId) === String(tmdbId));
-    if (alreadyAdded) return res.status(400).json({ message: "Film déjà dans la watchlist" });
+    // check if movie is already in watchlist
+    const alreadyAdded = user.watchlist.some(
+      (m) => String(m.tmdbId) === String(tmdbId)
+    );
+    if (alreadyAdded)
+      return res.status(400).json({ message: "Movie already in watchlist" });
 
-    // Ajoute le film
+    // add movie to watchlist
     user.watchlist.push({ tmdbId, title, poster });
     await user.save();
 
-    res.status(200).json({ message: "Film ajouté à la watchlist ✅" });
+    res.status(200).json({ message: "Movie added to watchlist" });
   } catch (err) {
-    console.error("❌ Erreur dans /add :", err);
-    res.status(500).json({ message: "Erreur serveur" });
+    // error while adding movie
+    console.error("Error in /add:", err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
+// Remove a movie from the watchlist
+router.delete("/remove/:tmdbId", authMiddleware, async (req, res) => {
+  try {
+    const { tmdbId } = req.params;
+
+    // find user by ID
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    // remove the movie with the matching tmdbId
+    // convert to String to be sure comparison works
+    user.watchlist = user.watchlist.filter(
+      (movie) => String(movie.tmdbId) !== String(tmdbId)
+    );
+
+    await user.save();
+
+    res.status(200).json({ message: "Movie removed from watchlist" });
+  } catch (err) {
+    // error while removing movie
+    console.error("Error in /remove:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
 
 module.exports = router;

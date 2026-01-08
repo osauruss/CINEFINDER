@@ -14,10 +14,12 @@ const Navbar = ({ token, setToken, user }) => {
   };
 
   const handleSearch = (e) => {
-    e.preventDefault();
-    if (!query.trim()) return;
-    navigate(`/movies?query=${query}`);
-  };
+  e.preventDefault();
+  if (!query.trim()) return;
+
+  navigate(`/search?query=${encodeURIComponent(query)}`);
+};
+
 
   return (
     <nav
@@ -31,51 +33,89 @@ const Navbar = ({ token, setToken, user }) => {
         position: "relative",
       }}
     >
-      {/* === Zone gauche : Liens + Search === */}
-      <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
-        <Link to="/" style={{ color: "#fff", textDecoration: "none" }}>
-          🏠 Accueil
+      {/*left Zone: favicon + movies*/}
+      <div style={{ display: "flex", alignItems: "center", gap: "25px" }}>
+        <Link 
+          to="/" 
+          style={{ 
+            color: "#fff", 
+            textDecoration: "none",
+            fontSize: "20px",
+            fontWeight: "bold",
+            letterSpacing: "0.5px"
+          }}
+        >
+          CineFinder
         </Link>
 
-        <Link to="/movies" style={{ color: "#fff", textDecoration: "none" }}>
-          🎬 Films
-        </Link>
-
-        {/* --- Search Bar compacte --- */}
-        <form onSubmit={handleSearch} style={{ display: "flex", gap: "5px",marginRight :"40px"}}>
-          <input
-            type="text"
-            placeholder="Recherche..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            style={{
-              padding: "5px 8px",
-              fontSize: "14px",
-              borderRadius: "4px",
-              border: "1px solid #444",
-              background: "#333",
-              color: "white",
-              width: "140px",
-            }}
-          />
-          <button
-            type="submit"
-            style={{
-              padding: "5px 10px",
-              background: "#555",
-              border: "none",
-              borderRadius: "4px",
-              color: "white",
-              cursor: "pointer",
-              fontSize: "13px",
-            }}
-          >
-            OK
-          </button>
-        </form>
+        
       </div>
 
-      {/* === Zone utilisateur à droite === */}
+      {/*  centered research bar  */}
+      <form 
+        onSubmit={handleSearch} 
+        style={{ 
+          position: "absolute",
+          left: "50%",
+          transform: "translateX(-50%)",
+          display: "flex", 
+          gap: "8px"
+        }}
+      >
+        <input
+          type="text"
+          placeholder="Rechercher un film..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          style={{
+            padding: "10px 20px",
+            fontSize: "14px",
+            borderRadius: "25px",
+            border: "none",
+            background: "#333",
+            color: "white",
+            width: "300px",
+            outline: "none",
+            transition: "all 0.3s ease",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+          }}
+          onFocus={(e) => {
+            e.target.style.background = "#3a3a3a";
+            e.target.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
+          }}
+          onBlur={(e) => {
+            e.target.style.background = "#333";
+            e.target.style.boxShadow = "0 2px 8px rgba(0,0,0,0.2)";
+          }}
+        />
+        <button
+          type="submit"
+          style={{
+            padding: "10px 24px",
+            background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+            border: "none",
+            borderRadius: "25px",
+            color: "white",
+            cursor: "pointer",
+            fontSize: "14px",
+            fontWeight: "500",
+            transition: "all 0.3s ease",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
+          }}
+          onMouseEnter={(e) => {
+            e.target.style.transform = "translateY(-2px)";
+            e.target.style.boxShadow = "0 4px 12px rgba(102, 126, 234, 0.4)";
+          }}
+          onMouseLeave={(e) => {
+            e.target.style.transform = "translateY(0)";
+            e.target.style.boxShadow = "0 2px 8px rgba(0,0,0,0.2)";
+          }}
+        >
+          Rechercher
+        </button>
+      </form>
+
+      {/*  user zone on the right */}
       <div style={{ display: "flex", alignItems: "center", position: "relative" }}>
         {!token ? (
           <>
@@ -87,7 +127,7 @@ const Navbar = ({ token, setToken, user }) => {
             </Link>
 
             <Link to="/register" style={{ color: "#61dafb", textDecoration: "none" }}>
-              S’inscrire
+              S'inscrire
             </Link>
           </>
         ) : (

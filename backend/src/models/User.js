@@ -5,13 +5,19 @@ const userSchema = new mongoose.Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   likedMovies: [
-    { tmdbId: String, title: String, rating: Number }
+    {
+      tmdbId: { type: String, required: true },
+      title: { type: String },
+      poster: { type: String },
+      rating: { type: Number, default: 0 }, 
+      addedAt: { type: Date, default: Date.now }
+    }
   ],
   watchlist: [
     {
-      tmdbId: String,     // ID TMDB du film
-      title: String,      // Titre du film
-      poster: String      // (nouveau champ) URL de l'affiche du film
+      tmdbId: String,    
+      title: String,    
+      poster: String      
     }
   ],
   preferences: {

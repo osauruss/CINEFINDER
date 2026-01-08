@@ -2,45 +2,66 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
-const jwt = require("jsonwebtoken");
 
-// Middleware d’authentification (vérifie le token)
-function authMiddleware(req, res, next) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).json({ message: "Token manquant" });
+const authMiddleware = require("../middleware/authMiddleware");
 
-  const token = authHeader.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "Token invalide" });
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // contient l’ID de l’utilisateur
-    next();
-  } catch (err) {
-    res.status(403).json({ message: "Token invalide ou expiré" });
-  }
-}
-
-// 🔹 Route pour récupérer les infos du user connecté
+// Route to get connected (logged-in) user information
 router.get("/me", authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-    if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
+    // get user ID from auth middleware
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
     res.json(user);
   } catch (err) {
-    res.status(500).json({ message: "Erreur serveur" });
+    // server error
+    res.status(500).json({ message: "Server error" });
   }
 });
 
-// 🔹 Ajouter un acteur aux préférences
+// POST /api/user/preferences/genres
+// Update user favorite genres
+router.post("/preferences/genres", authMiddleware, async (req, res) => {
+  try {
+    // authMiddleware sets req.userId
+    const userId = req.userId;
+    const { genres } = req.body; // TMDB genre IDs
+
+    // check if genres is an array
+    if (!Array.isArray(genres)) {
+      return res
+        .status(400)
+        .json({ error: "The 'genres' field must be an array of IDs" });
+    }
+
+    // update user preferences
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { "preferences.genres": genres },
+      { new: true }
+    );
+
+    res.json({
+      message: "Genres updated",
+      genres: user.preferences.genres,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+// Add an actor to user preferences
 router.post("/preferences/actors/:actorId", authMiddleware, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-    if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
+    // get user with ID from auth middleware
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
 
+    // initialize preferences if not exists
     if (!user.preferences) user.preferences = { genres: [], actors: [] };
+    if (!user.preferences.actors) user.preferences.actors = [];
 
-    // Évite les doublons
+    // avoid duplicates
     if (!user.preferences.actors.includes(req.params.actorId)) {
       user.preferences.actors.push(req.params.actorId);
       await user.save();
@@ -48,8 +69,38 @@ router.post("/preferences/actors/:actorId", authMiddleware, async (req, res) => 
 
     res.json({ success: true, actors: user.preferences.actors });
   } catch (err) {
-    console.error("Erreur lors de l’ajout d’un acteur :", err);
-    res.status(500).json({ message: "Erreur serveur" });
+    console.error("Error while adding actor:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+// Remove an actor from favorites
+router.delete("/preferences/actors/:id", authMiddleware, async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // debug logs (can be removed later)
+    console.log("DELETE route called");
+    console.log("User ID (req.userId):", req.userId);
+
+    // get user using ID from auth middleware
+    const user = await User.findById(req.userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (user.preferences && user.preferences.actors) {
+      // filter actor list and remove the selected actor
+      // convert to String to be safe
+      user.preferences.actors = user.preferences.actors.filter(
+        (actorId) => String(actorId) !== String(id)
+      );
+
+      await user.save();
+    }
+
+    res.json({ message: "Actor removed from favorites", user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server error" });
   }
 });
 

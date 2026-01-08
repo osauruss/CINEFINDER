@@ -1,10 +1,6 @@
 // backend/src/server.js
-// ================
-// Exemple de connexion à MongoDB Atlas avec mongoose
-// Bien commenté pour que tu comprennes chaque étape.
-// ================
 
-/* charger les variables d'environnement depuis le fichier .env */
+/* load environment variables from .env file */
 require('dotenv').config();
 
 /* imports */
@@ -14,63 +10,66 @@ const cors = require('cors');
 
 const app = express();
 
-/* middlewares basiques */
-app.use(cors());           // autorise les requêtes cross-origin (utile pour React local)
-app.use(express.json());   // parse le JSON dans le body des requêtes
+/* basic middlewares  */
+app.use(cors());           // allow cross-origin requests
+app.use(express.json());   // parse JSON from request body
 
-/* Récupérer le Mongo URI depuis process.env (fichier .env) */
+/* get MongoDB URI from environment variables */
 const MONGO_URI = process.env.MONGO_URI;
 
-/* Fonction pour initialiser la connexion à MongoDB */
+/* function to start the server and connect to MongoDB */
 async function startServer() {
   try {
-    // Connexion à MongoDB Atlas
-    // mongoose.connect retourne une promesse. On l'attend avant de démarrer le serveur.
-    await mongoose.connect(MONGO_URI /*, { useNewUrlParser: true, useUnifiedTopology: true } */);
+    // connect to MongoDB Atlas
+    await mongoose.connect(MONGO_URI);
+    console.log('Connecté à MongoDB Atlas');
 
-    console.log('✅ Connecté à MongoDB Atlas');
-
-    // Exemple d'une route test
+     // test root route
     app.get('/', (req, res) => {
-      res.send('Backend CineFinder connecté à MongoDB ✅');
+      res.send('Backend CineFinder connecté à MongoDB');
     });
 
-    // Démarrer le serveur HTTP
     const port = process.env.PORT || 5000;
-    // Import des routes
+
+    // ROUTES IMPORTS
+
     const filmRoutes = require("./routes/filmRoutes");
+    app.use("/api/films", filmRoutes);
+
     const actorRoutes = require("./routes/actors");
     app.use("/api/actors", actorRoutes);
 
     const watchlistRoutes = require("./routes/watchlist");
-    
     app.use("/api/watchlist", watchlistRoutes);
     
-    app.use("/api/films", filmRoutes);
-
     const movieRoutes = require("./routes/movies");
     app.use("/api/movies", movieRoutes);
+
+    const tmdbRoutes = require("./routes/tmdb");
+    app.use("/api/tmdb", tmdbRoutes);
+
 
     const authRoutes = require("./routes/auth");
     app.use("/api/auth", authRoutes);
 
-    const userRoutes = require("./routes/user");
+    const userRoutes = require("./routes/user"); 
     app.use("/api/users", userRoutes);
 
+    
+    const likedFilmsRoutes = require("./routes/likedfilms"); 
+    app.use("/api/liked", likedFilmsRoutes);
 
 
-
+    // start HTTP server
     app.listen(port, () => {
-      console.log(`🚀 Serveur démarré sur http://localhost:${port}`);
+      console.log(`Serveur démarré sur http://localhost:${port}`);
     });
 
   } catch (err) {
-    console.error('❌ Erreur de connexion à MongoDB :', err.message);
-    // Si la connexion échoue, arrêter l'application (ou gérer la tentative de reconnexion)
+    console.error('Erreur de connexion à MongoDB :', err.message);
     process.exit(1);
   }
 }
 
-/* Lance la fonction d'initialisation */
+/* call the start function */
 startServer();
-
