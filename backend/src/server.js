@@ -1,6 +1,6 @@
 // backend/src/server.js
 
-/* charger les variables d'environnement depuis le fichier .env */
+/* load environment variables from .env file */
 require('dotenv').config();
 
 /* imports */
@@ -10,28 +10,28 @@ const cors = require('cors');
 
 const app = express();
 
-/* middlewares basiques */
-app.use(cors());           // autorise les requêtes cross-origin
-app.use(express.json());   // parse le JSON dans le body des requêtes
+/* basic middlewares  */
+app.use(cors());           // allow cross-origin requests
+app.use(express.json());   // parse JSON from request body
 
-/* Récupérer le Mongo URI depuis process.env */
+/* get MongoDB URI from environment variables */
 const MONGO_URI = process.env.MONGO_URI;
 
-/* Fonction pour initialiser la connexion à MongoDB */
+/* function to start the server and connect to MongoDB */
 async function startServer() {
   try {
-    // Connexion à MongoDB Atlas
+    // connect to MongoDB Atlas
     await mongoose.connect(MONGO_URI);
     console.log('Connecté à MongoDB Atlas');
 
-    // Route test racine
+     // test root route
     app.get('/', (req, res) => {
       res.send('Backend CineFinder connecté à MongoDB');
     });
 
     const port = process.env.PORT || 5000;
 
-    // --- IMPORT DES ROUTES ---
+    // ROUTES IMPORTS
 
     const filmRoutes = require("./routes/filmRoutes");
     app.use("/api/films", filmRoutes);
@@ -57,12 +57,10 @@ async function startServer() {
 
     
     const likedFilmsRoutes = require("./routes/likedfilms"); 
-    
-    // 2. On utilise "/api/liked" pour correspondre au Frontend
     app.use("/api/liked", likedFilmsRoutes);
 
 
-    // Démarrer le serveur HTTP
+    // start HTTP server
     app.listen(port, () => {
       console.log(`Serveur démarré sur http://localhost:${port}`);
     });
@@ -73,5 +71,5 @@ async function startServer() {
   }
 }
 
-/* Lance la fonction d'initialisation */
+/* call the start function */
 startServer();

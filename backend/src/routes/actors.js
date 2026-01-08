@@ -2,7 +2,7 @@ const express = require("express");
 const axios = require("axios");
 const router = express.Router();
 
-// Détails d’un acteur
+// Get actor details
 router.get("/details/:id", async (req, res) => {
   try {
     const response = await axios.get(
@@ -10,11 +10,12 @@ router.get("/details/:id", async (req, res) => {
     );
     res.json(response.data);
   } catch (error) {
-    res.status(500).json({ error: "Erreur lors de la récupération de l'acteur" });
+    // error while fetching actor details
+    res.status(500).json({ error: "Error while fetching actor details" });
   }
 });
 
-// Films associés à un acteur
+// Get movies related to an actor
 router.get("/movies/:id", async (req, res) => {
   try {
     const response = await axios.get(
@@ -22,7 +23,8 @@ router.get("/movies/:id", async (req, res) => {
     );
     res.json(response.data);
   } catch (error) {
-    res.status(500).json({ error: "Erreur lors de la récupération des films" });
+    // error while fetching actor movies
+    res.status(500).json({ error: "Error while fetching actor movies" });
   }
 });
 
